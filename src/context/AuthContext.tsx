@@ -52,6 +52,8 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         setToken(null);
         window.localStorage.removeItem('token');
         window.localStorage.removeItem('user');
+
+        navigate('/signin');
     };
 
     return (

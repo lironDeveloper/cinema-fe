@@ -2,14 +2,20 @@ import { AuthProvider } from './context/AuthContext';
 import { Route, Routes } from "react-router-dom";
 import ProtectedRoute from './components/ProtectedRoute';
 import SignIn from './components/SignIn';
+import SignUp from './components/SignUp';
 import Home from './components/Home';
+import Header from './components/Header';
+import MovieInfo from './components/MovieInfo';
+import NoMatch from './components/NoMatch';
 
 function App() {
   return (
     <div dir='rtl'>
       <AuthProvider>
+        <Header />
         <Routes>
           <Route path="/signin" element={<SignIn />} />
+          <Route path="/signup" element={<SignUp />} />
           <Route
             path="/"
             element={
@@ -61,10 +67,10 @@ function App() {
             }
           />
           <Route
-            path="/movie"
+            path="/movie/:movieId"
             element={
               <ProtectedRoute>
-                <div>movie info</div>
+                <MovieInfo />
               </ProtectedRoute>
             }
           />
@@ -76,6 +82,7 @@ function App() {
               </ProtectedRoute>
             }
           />
+          <Route path="*" element={<NoMatch />} />
         </Routes>
       </AuthProvider>
     </div>
