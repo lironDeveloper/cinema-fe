@@ -53,7 +53,6 @@ const SignUp: FC = () => {
                     firstName,
                     lastName,
                     password,
-                    role: 'ROLE_CLIENT' // TODO!!
                 }),
             });
 

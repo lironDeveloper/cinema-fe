@@ -19,6 +19,8 @@ import InputBase from '@mui/material/InputBase';
 import SearchIcon from '@mui/icons-material/Search';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import { Logout } from '@mui/icons-material';
+import MovieIcon from '@mui/icons-material/Movie';
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 
 const Search = styled('div')(({ theme }) => ({
     position: 'relative',
@@ -27,22 +29,29 @@ const Search = styled('div')(({ theme }) => ({
     '&:hover': {
         backgroundColor: alpha(theme.palette.common.white, 0.25),
     },
-    marginLeft: 0,
-    width: '100%',
-    [theme.breakpoints.up('sm')]: {
-        marginLeft: theme.spacing(1),
-        width: 'auto',
-    },
+    // marginLeft: 0,
+    // width: 'auto',
+    // [theme.breakpoints.up('sm')]: {
+    //     marginLeft: theme.spacing(1),
+    //     width: 'auto',
+    // },
+    // marginLeft: theme.spacing(1),
+    width: 'auto',
+    flexGrow: 0.5,
 }));
 
 const SearchIconWrapper = styled('div')(({ theme }) => ({
     padding: theme.spacing(0, 2),
     height: '100%',
     position: 'absolute',
-    pointerEvents: 'none',
+    // pointerEvents: 'none',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
+    left: 0,
+    "&:hover": {
+        cursor: 'pointer'
+    }
 }));
 
 const StyledInputBase = styled(InputBase)(({ theme }) => ({
@@ -52,15 +61,17 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
         // vertical padding + font size from searchIcon
         paddingLeft: `calc(1em + ${theme.spacing(4)})`,
         transition: theme.transitions.create('width'),
-        width: '100%',
-        [theme.breakpoints.up('sm')]: {
-            width: '12ch',
-            '&:focus': {
-                width: '20ch',
-            },
+        // width: '100%',
+        // [theme.breakpoints.up('sm')]: {
+        width: '35ch',
+        '&:focus': {
+            width: '35ch',
         },
+        // },
     },
 }));
+
+const pages = ['הזמנת כרטיס'];
 
 const Header: FC = () => {
     const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(null);
@@ -93,7 +104,6 @@ const Header: FC = () => {
         let hash = 0;
         let i;
 
-        /* eslint-disable no-bitwise */
         for (i = 0; i < string.length; i += 1) {
             hash = string.charCodeAt(i) + ((hash << 5) - hash);
         }
@@ -104,7 +114,6 @@ const Header: FC = () => {
             const value = (hash >> (i * 8)) & 0xff;
             color += `00${value.toString(16)}`.slice(-2);
         }
-        /* eslint-enable no-bitwise */
 
         return color;
     }
@@ -118,99 +127,74 @@ const Header: FC = () => {
         };
     }
 
+    const onSearch = () => {
+        if (keyword.trim().length > 0) {
+            navigate(`/search?keyword=${keyword}`);
+        }
+    }
+
     return (
-        <AppBar position="static">
-            <Container maxWidth="xl">
-                <Toolbar disableGutters>
-                    <AdbIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} />
-                    <Typography
-                        variant="h6"
-                        noWrap
-                        component="a"
-                        href="/"
-                        sx={{
-                            mr: 2,
-                            display: { xs: 'none', md: 'flex' },
-                            fontFamily: 'monospace',
-                            fontWeight: 700,
-                            letterSpacing: '.3rem',
-                            color: 'inherit',
-                            textDecoration: 'none',
+        <AppBar position="fixed" sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}>
+            <Toolbar >
+                <MovieIcon sx={{ display: 'flex', mr: 1 }} />
+                <Typography
+                    variant="h4"
+                    noWrap
+                    component="a"
+                    href="/"
+                    sx={{
+                        mr: 2,
+                        display: 'flex',
+                        fontWeight: 700,
+                        letterSpacing: '.3rem',
+                        color: 'inherit',
+                        textDecoration: 'none',
+                        flexGrow: 1,
+                    }}
+                >
+                    סינמה
+                </Typography>
+                <Search sx={{ display: { xs: 'none', md: 'inherit' } }}>
+
+                    <StyledInputBase
+                        placeholder="חיפוש סרט על פי מילת מפתח..."
+                        inputProps={{ 'aria-label': 'search' }}
+                        value={keyword}
+                        onChange={onkeywordChanged}
+                        onKeyDown={(event) => {
+                            if (event.key === 'Enter') {
+                                onSearch()
+                            }
                         }}
                     />
-                    <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
-                        <IconButton
-                            size="large"
-                            aria-label="account of current user"
-                            aria-controls="menu-appbar"
-                            aria-haspopup="true"
-                            onClick={handleOpenNavMenu}
-                            color="inherit"
-                        >
-                            <MenuIcon />
-                        </IconButton>
-                        <Menu
-                            id="menu-appbar"
-                            anchorEl={anchorElNav}
-                            anchorOrigin={{
-                                vertical: 'bottom',
-                                horizontal: 'left',
-                            }}
-                            keepMounted
-                            transformOrigin={{
-                                vertical: 'top',
-                                horizontal: 'left',
-                            }}
-                            open={Boolean(anchorElNav)}
-                            onClose={handleCloseNavMenu}
-                            sx={{
-                                display: { xs: 'block', md: 'none' },
-                            }}
-                        >
-
-                        </Menu>
-                    </Box>
-                    <AdbIcon sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }} />
-                    <Typography
-                        variant="h5"
-                        noWrap
-                        component="a"
-                        href="/"
-                        sx={{
-                            mr: 2,
-                            display: { xs: 'flex', md: 'none' },
-                            flexGrow: 1,
-                            fontFamily: 'monospace',
-                            fontWeight: 700,
-                            letterSpacing: '.3rem',
-                            color: 'inherit',
-                            textDecoration: 'none',
-                        }}
-                    />
-                    <Search>
-                        <SearchIconWrapper>
-                            <SearchIcon />
-                        </SearchIconWrapper>
-                        <StyledInputBase
-                            placeholder="חיפוש סרט על פי מילת מפתח..."
-                            inputProps={{ 'aria-label': 'search' }}
-                            value={keyword}
-                            onChange={onkeywordChanged}
-                            onKeyDown={(event) => {
-                                if (event.key === 'Enter') {
-                                    navigate(`/search?keyword=${keyword}`);
-                                }
-                            }}
-                        />
-                    </Search>
-
+                    <SearchIconWrapper >
+                        <SearchIcon onClick={onSearch} />
+                    </SearchIconWrapper>
+                </Search>
+                {user ?
                     <Box sx={{ flexGrow: 0 }}>
-                        {user ?
+                        <Container sx={{ display: 'flex', alignItems: 'center' }}>
                             <Tooltip title="משתמש">
                                 <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
                                     <Avatar {...stringAvatar(user.fullName)} />
                                 </IconButton>
-                            </Tooltip> : null}
+                            </Tooltip>
+                            <Typography
+                                variant="body2"
+                                noWrap
+                                sx={{
+                                    mr: 1,
+                                    fontWeight: 700,
+                                    letterSpacing: '.3rem',
+                                    color: 'inherit',
+                                    textDecoration: 'none',
+                                    flexGrow: 1,
+                                }}
+                            >
+                                {user.fullName}
+                            </Typography>
+                        </Container>
+
                         <Menu
                             sx={{ mt: '45px' }}
                             id="menu-appbar"
@@ -228,7 +212,9 @@ const Header: FC = () => {
                             onClose={handleCloseUserMenu}
                         >
                             <MenuItem onClick={() => { setAnchorElUser(null); navigate('/user') }}>
-                                <Avatar /> הפרופיל שלי
+                                <ListItemIcon>
+                                    <AccountCircleIcon fontSize="small" />
+                                </ListItemIcon> הפרופיל שלי
                             </MenuItem>
                             <MenuItem onClick={() => { setAnchorElUser(null); navigate('/signin'); }}>
                                 <ListItemIcon>
@@ -236,9 +222,8 @@ const Header: FC = () => {
                                 </ListItemIcon> התנתק/י
                             </MenuItem>
                         </Menu>
-                    </Box>
-                </Toolbar>
-            </Container>
+                    </Box> : null}
+            </Toolbar>
         </AppBar>
     );
 }

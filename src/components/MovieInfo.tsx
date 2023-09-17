@@ -2,13 +2,18 @@ import { FC } from 'react';
 import { useAuth } from '../context/AuthContext';
 import styled from '@emotion/styled';
 import { useParams } from 'react-router-dom';
+import Box from '@mui/material/Box';
+import Toolbar from '@mui/material/Toolbar';
 
 const MovieInfo: FC = () => {
     const { movieId } = useParams();
 
 
     return (
-        <div>{movieId}</div>
+        <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
+            <Toolbar />
+            <div>{movieId}</div>
+        </Box>
     );
 };
 
