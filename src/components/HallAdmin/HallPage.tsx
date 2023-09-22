@@ -10,16 +10,18 @@ import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
 
 import Table from '../../utils/Table';
-import Hall from '../../interfaces/hall';
-import HeadCell from '../../interfaces/headCell';
-import Branch from '../../interfaces/branch';
+import Hall from '../../interfaces/Hall';
+import HeadCell from '../../interfaces/HeadCell';
+import Branch from '../../interfaces/Branch';
 import ActionType from '../../interfaces/ActionType';
 import Modal from '../../utils/Modal';
 import CreateHallDialog from './CreateHallDialog';
 import DeleteHallDialog from './DeleteHallDialog';
 import EditHallDialog from './EditHallDialog';
+import Rowable from '../../interfaces/Rowable';
+import notify from '../../utils/ErrorToast';
 
-const headCells: HeadCell[] = [
+const headCells: HeadCell<Hall>[] = [
     {
         id: 'name',
         disablePadding: true,
@@ -46,6 +48,7 @@ const HallPage: FC = () => {
     const [openModal, setOpenModal] = useState(false);
     const [modalTitle, setModalTitle] = useState('');
     const [action, setAction] = useState<ActionType>("ADD");
+    const [selectedHalls, setSelectedHalls] = useState<number[]>([]);
 
     const { token } = useAuth();
 
@@ -58,35 +61,136 @@ const HallPage: FC = () => {
     }, [currentBranch])
 
     const fetchBranches = async () => {
-        const response = await fetch(`http://localhost:8080/api/branch`, {
-            headers: {
-                'Authorization': `Bearer ${token}`
-            },
-            credentials: 'include'
-        });
-
-        const branches = await response.json();
-        const updatedMap: Map<string, number> = new Map(branchesMap);
-        branches.forEach((branch: Branch) => {
-            updatedMap.set(branch.name, branch.id);
-        });
-        setBranchesMap(updatedMap);
-        setCurrentBranch(branches[0].name);
-    };
-
-    const fetchHalls = async () => {
-        if (branchesMap.size > 0) {
-            const response = await fetch(`http://localhost:8080/api/hall/branch/${branchesMap.get(currentBranch)}`, {
+        try {
+            const response = await fetch(`http://localhost:8080/api/branch`, {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 },
                 credentials: 'include'
             });
 
-            const halls = await response.json();
-            setHalls(halls);
+            const data = await response.json();
+            if (response.ok) {
+                const updatedMap: Map<string, number> = new Map(branchesMap);
+                data.forEach((branch: Branch) => {
+                    updatedMap.set(branch.name, branch.id);
+                });
+                setBranchesMap(updatedMap);
+                setCurrentBranch(data[0].name);
+            } else {
+                throw new Error(data.errors[0]);
+            }
+        } catch (error: any) {
+            notify(error.message);
         }
     };
+
+    const fetchHalls = async () => {
+        try {
+            if (branchesMap.size > 0) {
+                const response = await fetch(`http://localhost:8080/api/hall/branch/${branchesMap.get(currentBranch)}`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    },
+                    credentials: 'include'
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    setHalls(data);
+                } else {
+                    throw new Error(data.errors[0])
+                }
+            }
+        } catch (error: any) {
+            notify(error.message);
+        }
+    };
+
+    const onCreateSubmited = async (hall: Hall) => {
+        try {
+            const response = await fetch(`http://localhost:8080/api/hall`, {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(hall),
+                credentials: 'include'
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+                setHalls(halls.concat(data));
+                changeModalState();
+            } else {
+                throw new Error(data.errors[0]);
+            }
+        } catch (error: any) {
+            notify(error.message);
+        }
+    }
+
+    const onEditSubmited = async (updatedHall: Hall) => {
+        const hallId = updatedHall.id;
+
+        try {
+            const response = await fetch(`http://localhost:8080/api/hall/${hallId}`, {
+                method: 'PUT',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(updatedHall),
+                credentials: 'include'
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+                setHalls((prevHalls) => {
+                    const updatedHalls = [...prevHalls];
+                    const hallIndex = updatedHalls.findIndex((hall) => hall.id === hallId);
+                    if (hallIndex !== -1) {
+                        updatedHalls[hallIndex] = { ...updatedHalls[hallIndex], ...updatedHall };
+                    }
+                    return updatedHalls;
+                });
+                changeModalState();
+            } else {
+                throw new Error(data.errors[0]);
+            }
+        } catch (error: any) {
+            notify(error.message);
+        }
+    }
+
+    const onDeleteSubmited = async () => {
+        try {
+            selectedHalls.forEach(async hall => {
+                const response = await fetch(`http://localhost:8080/api/hall/${hall}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json',
+                    },
+                    credentials: 'include'
+                });
+
+                if (!response.ok) {
+                    const data = await response.json();
+                    throw new Error(data.errors[0]);
+                }
+            });
+            setHalls(halls.filter(h => !selectedHalls.includes(h.id)))
+            setSelectedHalls([])
+            changeModalState();
+        } catch (error: any) {
+            notify(error.message);
+        }
+    }
 
     const handleChange = (event: SelectChangeEvent) => {
         setCurrentBranch(event.target.value);
@@ -95,11 +199,15 @@ const HallPage: FC = () => {
     const renderModal = () => {
         switch (action) {
             case 'ADD':
-                return <CreateHallDialog handleClose={changeModalState} title={modalTitle} />
+                return <CreateHallDialog handleClose={changeModalState} title={modalTitle} branchId={branchesMap.get(currentBranch)} onCreateHall={onCreateSubmited} />
             case 'DELETE':
-                return <DeleteHallDialog handleClose={changeModalState} title={modalTitle} />
+                return <DeleteHallDialog handleClose={changeModalState} title={modalTitle} onDeleteHall={onDeleteSubmited} />
             case 'EDIT':
-                return <EditHallDialog handleClose={changeModalState} title={modalTitle} />
+                return <EditHallDialog
+                    handleClose={changeModalState}
+                    title={modalTitle}
+                    onEditHall={onEditSubmited}
+                    hall={halls.find((h: Hall) => h.id === selectedHalls[0]) || halls[0]} />
             default:
                 return <></>
         }
@@ -109,7 +217,21 @@ const HallPage: FC = () => {
         setOpenModal(!openModal);
     }
 
-    const onActionHall = (actionToPerform: ActionType, title: string) => {
+    const onEditHall = (actionToPerform: ActionType, title: string, selectedId: number) => {
+        setSelectedHalls(Array.of(selectedId));
+        onAction(actionToPerform, title);
+    }
+
+    const onAddHall = (actionToPerform: ActionType, title: string) => {
+        onAction(actionToPerform, title);
+    }
+
+    const onDeleteHall = (actionToPerform: ActionType, title: string, selectedIds: number[]) => {
+        setSelectedHalls(selectedIds);
+        onAction(actionToPerform, title);
+    }
+
+    const onAction = (actionToPerform: ActionType, title: string) => {
         setAction(actionToPerform);
         setModalTitle(title + "אולם");
         changeModalState();
@@ -140,7 +262,7 @@ const HallPage: FC = () => {
                         </Select>
                     </FormControl>
                 </Box>}
-            <Table editable={true} title='אולמות' mainColumn='name' rows={halls} headCells={headCells} onAction={onActionHall} />
+            <Table editable={true} title='אולמות' rows={halls} headCells={headCells as HeadCell<Rowable>[]} onAdd={onAddHall} onDelete={onDeleteHall} onEdit={onEditHall} />
             <Modal isOpen={openModal} handleClose={changeModalState}>
                 {renderModal()}
             </Modal>

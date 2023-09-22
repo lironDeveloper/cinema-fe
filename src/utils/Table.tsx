@@ -22,12 +22,9 @@ import AddIcon from '@mui/icons-material/Add'; import { visuallyHidden } from '@
 import EditIcon from '@mui/icons-material/Edit'; import { useAuth } from '../context/AuthContext';
 import { FC, useEffect } from 'react';
 import ActionType from '../interfaces/ActionType';
+import Rowable from '../interfaces/Rowable';
+import HeadCell from '../interfaces/HeadCell';
 
-interface HeadCell {
-    disablePadding: boolean;
-    id: any;
-    label: string;
-}
 
 function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
     if (b[orderBy] < a[orderBy]) {
@@ -41,7 +38,7 @@ function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
 
 type Order = 'asc' | 'desc';
 
-function getComparator<Key extends keyof any>(
+function getComparator<Key extends keyof Rowable>(
     order: Order,
     orderBy: Key,
 ): (
@@ -53,17 +50,17 @@ function getComparator<Key extends keyof any>(
         : (a, b) => -descendingComparator(a, b, orderBy);
 }
 
-function stableSort<T>(array: readonly T[], comparator: (a: T, b: T) => number) {
-    const stabilizedThis = array.map((el, index) => [el, index] as [T, number]);
-    stabilizedThis.sort((a, b) => {
-        const order = comparator(a[0], b[0]);
-        if (order !== 0) {
-            return order;
-        }
-        return a[1] - b[1];
-    });
-    return stabilizedThis.map((el) => el[0]);
-}
+// function stableSort(array: Rowable[], comparator: (a: Rowable, b: Rowable) => number) {
+//     const stabilizedThis = array.map((el, index) => [el, index] as [Rowable, number]);
+//     stabilizedThis.sort((a, b) => {
+//         const order = comparator(a[0], b[0]);
+//         if (order !== 0) {
+//             return order;
+//         }
+//         return a[1] - b[1];
+//     });
+//     return stabilizedThis.map((el) => el[0]);
+// }
 
 interface EnhancedTableProps {
     numSelected: number;
@@ -72,7 +69,7 @@ interface EnhancedTableProps {
     order: Order;
     orderBy: string;
     rowCount: number;
-    headCells: HeadCell[];
+    headCells: HeadCell<Rowable>[];
 }
 
 function EnhancedTableHead(props: EnhancedTableProps) {
@@ -124,15 +121,17 @@ function EnhancedTableHead(props: EnhancedTableProps) {
 }
 
 interface EnhancedTableToolbarProps {
-    numSelected: number;
+    selected: number[];
     title: string;
     editable: boolean;
-    onAction: (action: ActionType, title: string) => void;
+    onAdd: (action: ActionType, title: string) => void;
+    onEdit?: (action: ActionType, title: string, selectedId: number) => void;
+    onDelete: (action: ActionType, title: string, selectedIds: number[]) => void;
 }
 
 function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
-    const { numSelected, title, editable, onAction } = props;
-
+    const { selected, title, editable, onAdd, onEdit, onDelete } = props;
+    let numSelected = selected.length;
     return (
         <Toolbar
             sx={{
@@ -166,19 +165,19 @@ function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
             {numSelected > 0 ? (
                 <>
                     <Tooltip title="מחיקה">
-                        <IconButton onClick={() => onAction("DELETE", "מחיקת ")}>
+                        <IconButton onClick={() => onDelete("DELETE", "מחיקת ", selected)}>
                             <DeleteIcon />
                         </IconButton>
                     </Tooltip>
-                    {editable && numSelected == 1 ? (<Tooltip title="עריכה">
-                        <IconButton onClick={() => onAction("EDIT", "עריכת ")}>
+                    {editable && numSelected == 1 && onEdit ? (<Tooltip title="עריכה">
+                        <IconButton onClick={() => onEdit("EDIT", "עריכת ", selected[0])}>
                             <EditIcon />
                         </IconButton>
                     </Tooltip>) : null}
                 </>
             ) : (
                 <Tooltip title="הוספה">
-                    <IconButton onClick={() => { onAction("ADD", "הוספת ") }}>
+                    <IconButton onClick={() => { onAdd("ADD", "הוספת ") }}>
                         <AddIcon />
                     </IconButton>
                 </Tooltip>
@@ -190,17 +189,19 @@ function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
 interface TableProps {
     editable: boolean;
     title: string;
-    mainColumn: string;
-    rows: any[];
-    headCells: HeadCell[];
-    onAction: (action: ActionType, title: string) => void;
+    rows: Rowable[];
+    headCells: HeadCell<Rowable>[];
+    onAdd: (action: ActionType, title: string) => void;
+    onEdit?: (action: ActionType, title: string, selectedId: number) => void;
+    onDelete: (action: ActionType, title: string, selectedIds: number[]) => void;
+
 }
 
 const TableCinema: FC<TableProps> = (props) => {
-    const { editable, title, mainColumn, rows, headCells, onAction } = props;
+    const { editable, title, rows, headCells, onAdd, onEdit, onDelete } = props;
     const [order, setOrder] = React.useState<Order>('asc');
-    const [orderBy, setOrderBy] = React.useState<any>(mainColumn);
-    const [selected, setSelected] = React.useState<readonly string[]>([]);
+    const [orderBy, setOrderBy] = React.useState<keyof Rowable>('id');
+    const [selected, setSelected] = React.useState<number[]>([]);
     const [page, setPage] = React.useState(0);
     const [rowsPerPage, setRowsPerPage] = React.useState(10);
 
@@ -215,16 +216,16 @@ const TableCinema: FC<TableProps> = (props) => {
 
     const handleSelectAllClick = (event: React.ChangeEvent<HTMLInputElement>) => {
         if (event.target.checked) {
-            const newSelected = rows.map((n) => n.id);
+            const newSelected = rows.map((n: Rowable) => n.id);
             setSelected(newSelected);
             return;
         }
         setSelected([]);
     };
 
-    const handleClick = (event: React.MouseEvent<unknown>, name: any) => {
-        const selectedIndex = selected.indexOf(name);
-        let newSelected: readonly string[] = [];
+    const handleClick = (event: React.MouseEvent<unknown>, name: number) => {
+        const selectedIndex: number = selected.indexOf(name);
+        let newSelected: number[] = [];
 
         if (selectedIndex === -1) {
             newSelected = newSelected.concat(selected, name);
@@ -260,17 +261,17 @@ const TableCinema: FC<TableProps> = (props) => {
 
     const visibleRows = React.useMemo(
         () =>
-            stableSort(props.rows, getComparator(order, orderBy)).slice(
+            rows.slice(
                 page * rowsPerPage,
                 page * rowsPerPage + rowsPerPage,
-            ),
+            ).sort(getComparator(order, orderBy)),
         [order, orderBy, page, rowsPerPage, rows],
     );
 
     return (
         <Box sx={{ width: '100%' }}>
             <Paper sx={{ width: '100%', mb: 2 }}>
-                <EnhancedTableToolbar numSelected={selected.length} editable={editable} title={title} onAction={onAction} />
+                <EnhancedTableToolbar selected={selected} editable={editable} title={title} onAdd={onAdd} onEdit={onEdit} onDelete={onDelete} />
                 <TableContainer>
                     <Table
                         sx={{ minWidth: 750 }}

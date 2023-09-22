@@ -13,7 +13,7 @@ import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { useAuth } from '../context/AuthContext';
 import { FC, useState, ChangeEvent, FormEvent, useEffect } from 'react';
-import notify from '../utils/errorToast';
+import notify from '../utils/ErrorToast';
 
 
 const SignIn: FC = () => {

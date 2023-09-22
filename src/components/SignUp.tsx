@@ -13,7 +13,7 @@ import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { FC, useState, ChangeEvent, FormEvent, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import notify from '../utils/errorToast';
+import notify from '../utils/ErrorToast';
 
 
 const SignUp: FC = () => {

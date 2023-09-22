@@ -7,6 +7,7 @@ import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import { FC, useEffect, useState } from 'react';
 import { useAuth } from '../context/AuthContext';
+import notify from '../utils/ErrorToast';
 
 type MovieCardProps = {
     title: string,
@@ -23,16 +24,24 @@ const MovieCard: FC<MovieCardProps> = (props) => {
     }, []);
 
     const fetchMovieThumbnail = async () => {
-        const response = await fetch(props.thumnailURL, {
-            headers: {
-                'Authorization': `Bearer ${token}`
-            },
-            credentials: 'include'
-        });
+        try {
+            const response = await fetch(props.thumnailURL, {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                },
+                credentials: 'include'
+            });
 
-        const thumbnail = await response.blob();
-        setImageUrl(URL.createObjectURL(thumbnail));
-
+            if (response.ok) {
+                const thumbnail = await response.blob();
+                setImageUrl(URL.createObjectURL(thumbnail));
+            } else {
+                const data = await response.json();
+                throw new Error(data.errors[0]);
+            }
+        } catch (error: any) {
+            notify(error.message);
+        }
     };
 
     return (

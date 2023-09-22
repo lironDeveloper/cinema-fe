@@ -5,6 +5,7 @@ import Toolbar from '@mui/material/Toolbar';
 import MovieCard from './MovieCard';
 import { Stack, Typography, Paper } from '@mui/material'
 import Container from '@mui/material/Container';
+import notify from '../utils/ErrorToast';
 
 interface MovieData {
     movies: Movie[];
@@ -65,21 +66,29 @@ const Home: React.FC = () => {
 
     const fetchMovies = () => {
         Object.keys(Genres).forEach(async genre => {
-            const response = await fetch(`http://localhost:8080/api/movie/genre/${genre}`, {
-                headers: {
-                    'Authorization': `Bearer ${token}`
-                },
-                credentials: 'include'
-            });
+            try {
+                const response = await fetch(`http://localhost:8080/api/movie/genre/${genre}`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    },
+                    credentials: 'include'
+                });
 
-            const movies = await response.json();
-            console.log(movies)
-            setMoviesByGenre(() => ({
-                [genre]: {
-                    movies,
-                    loading: false,
+                const data = await response.json();
+
+                if (response.ok) {
+                    setMoviesByGenre(() => ({
+                        [genre]: {
+                            movies: data,
+                            loading: false,
+                        }
+                    }));
+                } else {
+                    throw new Error(data.errors[0]);
                 }
-            }));
+            } catch (error: any) {
+                notify(error.message);
+            }
         });
     };
 

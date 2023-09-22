@@ -10,15 +10,18 @@ import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
 
 import Table from '../../utils/Table';
-import HeadCell from '../../interfaces/headCell';
+import HeadCell from '../../interfaces/HeadCell';
 import Movie from '../../interfaces/Movie';
 import CreateMovieDialog from './CreateMovieDialog';
 import Modal from '../../utils/Modal';
 import ActionType from '../../interfaces/ActionType';
 import DeleteMovieDialog from './DeleteMovieDialog';
 import EditMovieDialog from './EditMovieDialog';
+import Rowable from '../../interfaces/Rowable';
+import notify from '../../utils/ErrorToast';
+import moment from 'moment';
 
-const headCells: HeadCell[] = [
+const headCells: HeadCell<Movie>[] = [
     {
         id: 'title',
         disablePadding: true,
@@ -61,11 +64,33 @@ const headCells: HeadCell[] = [
     },
 ];
 
+const genreTranslator = (genre: string) => {
+    switch (genre) {
+        case ("COMEDY"):
+            return "קומדיה";
+        case ("HORROR"):
+            return "אימה";
+        case ("DRAMA"):
+            return "דרמה";
+        case ("KIDS"):
+            return "ילדים"
+        case ("ACTION"):
+            return "אקשן"
+        default:
+            return "לא מוכר"
+    }
+}
+
+const languageTranslator = () => {
+
+}
+
 const MoviePage: FC = () => {
     const [movies, setMovies] = useState<Movie[]>([]);
     const [openModal, setOpenModal] = useState(false);
     const [modalTitle, setModalTitle] = useState('');
     const [action, setAction] = useState<ActionType>("ADD");
+    const [selectedMovies, setSelectedMovies] = useState<number[]>([]);
 
     const { token } = useAuth();
 
@@ -74,15 +99,31 @@ const MoviePage: FC = () => {
     }, []);
 
     const fetchMovies = async () => {
-        const response = await fetch(`http://localhost:8080/api/movie`, {
-            headers: {
-                'Authorization': `Bearer ${token}`
-            },
-            credentials: 'include'
-        });
+        try {
+            const response = await fetch(`http://localhost:8080/api/movie`, {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                },
+                credentials: 'include'
+            });
 
-        const movies = await response.json();
-        setMovies(movies);
+            const data = await response.json();
+            if (response.ok) {
+                const unformattedMovies: Movie[] = data;
+                setMovies(unformattedMovies.map((movie: Movie) => {
+                    return {
+                        ...movie,
+                        duration: movie.duration + " דקות",
+                        releaseDate: moment(movie.releaseDate).format('L'),
+                        // genre: 
+                    }
+                }));
+            } else {
+                throw new Error(data.errors[0]);
+            }
+        } catch (error: any) {
+            notify(error.message);
+        }
     };
 
     const changeModalState = () => {
@@ -102,10 +143,24 @@ const MoviePage: FC = () => {
         }
     }
 
-    const onActionMovie = (actionToPerform: ActionType, title: string) => {
+    const onAction = (actionToPerform: ActionType, title: string) => {
         setAction(actionToPerform);
         setModalTitle(title + "סרט");
         changeModalState();
+    }
+
+    const onEditMovie = (actionToPerform: ActionType, title: string, selectedId: number) => {
+        setSelectedMovies(Array.of(selectedId));
+        onAction(actionToPerform, title);
+    }
+
+    const onAddMovie = (actionToPerform: ActionType, title: string) => {
+        onAction(actionToPerform, title);
+    }
+
+    const onDeleteMovie = (actionToPerform: ActionType, title: string, selectedIds: number[]) => {
+        setSelectedMovies(selectedIds);
+        onAction(actionToPerform, title);
     }
 
     return (
@@ -114,10 +169,11 @@ const MoviePage: FC = () => {
             <Table
                 editable={true}
                 title='סרטים'
-                mainColumn='title'
                 rows={movies}
-                headCells={headCells}
-                onAction={onActionMovie}
+                headCells={headCells as HeadCell<Rowable>[]}
+                onAdd={onAddMovie}
+                onEdit={onEditMovie}
+                onDelete={onDeleteMovie}
             />
             <Modal isOpen={openModal} handleClose={changeModalState}>
                 {renderModal()}

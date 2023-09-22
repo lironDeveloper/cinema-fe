@@ -2,12 +2,12 @@ import Backdrop from '@mui/material/Backdrop';
 import Button from '@mui/material/Button';
 import { ChangeEvent, FC, useState } from 'react';
 import { DialogActions, DialogContent, DialogContentText, DialogTitle, TextField } from '@mui/material';
-import Branch from '../../interfaces/branch';
+import Branch from '../../interfaces/Branch';
 
 interface Props {
     handleClose: () => void;
     title: string;
-    onCreateBranch: (branch: object) => void;
+    onCreateBranch: (branch: Branch) => void;
 }
 
 const CreateBranchDialog: FC<Props> = (props) => {
@@ -18,7 +18,8 @@ const CreateBranchDialog: FC<Props> = (props) => {
     const [contactInfo, setContactInfo] = useState<string>('');
 
     const onSubmit = async () => {
-        const branch = {
+        const branch: Branch = {
+            id: 0,
             name,
             city,
             address,

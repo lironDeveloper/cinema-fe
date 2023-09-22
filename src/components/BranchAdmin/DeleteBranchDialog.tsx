@@ -6,32 +6,27 @@ import { DialogActions, DialogContent, DialogContentText, DialogTitle, TextField
 interface Props {
     handleClose: () => void;
     title: string;
+    onDeleteBranch: () => void;
 }
 
 const DeleteBranchDialog: FC<Props> = (props) => {
-    const { handleClose, title } = props;
+    const { handleClose, title, onDeleteBranch } = props;
+
+    const onSubmit = async () => {
+        await onDeleteBranch();
+    }
 
     return (
         <>
             <DialogTitle>{title}</DialogTitle>
             <DialogContent>
                 <DialogContentText>
-                    To subscribe to this website, please enter your email address here. We
-                    will send updates occasionally.
+                    האם את/ה בטוח/ה שאת/ה רוצה למחוק סניפים אלו?
                 </DialogContentText>
-                <TextField
-                    autoFocus
-                    margin="dense"
-                    id="name"
-                    label="Email Address"
-                    type="email"
-                    fullWidth
-                    variant="standard"
-                />
             </DialogContent>
             <DialogActions>
-                <Button onClick={handleClose}>Cancel</Button>
-                <Button onClick={handleClose}>Subscribe</Button>
+                <Button onClick={handleClose}>ביטול</Button>
+                <Button onClick={onSubmit}>מחיקה</Button>
             </DialogActions>
         </>
     );

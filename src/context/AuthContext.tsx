@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, ReactNode, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import notify from '../utils/ErrorToast';
 
 interface User {
     id: number;
@@ -36,16 +37,24 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         setToken(newToken);
         window.localStorage.setItem('token', newToken);
 
-        const response = await fetch('http://localhost:8080/api/user/me', {
-            headers: {
-                'Authorization': `Bearer ${newToken}`
-            },
-            credentials: 'include'
-        });
-        let data = await response.json();
-        setUser({ ...data });
+        try {
+            const response = await fetch('http://localhost:8080/api/user/me', {
+                headers: {
+                    'Authorization': `Bearer ${newToken}`
+                },
+                credentials: 'include'
+            });
+            let data = await response.json();
 
-        navigate('/');
+            if (response.ok) {
+                setUser({ ...data });
+                navigate('/');
+            } else {
+                throw new Error(data.errors[0]);
+            }
+        } catch (error: any) {
+            notify(error.message);
+        }
     };
 
     const logout = () => {
