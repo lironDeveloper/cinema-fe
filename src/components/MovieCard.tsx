@@ -48,8 +48,7 @@ const MovieCard: FC<MovieCardProps> = (props) => {
         <Card sx={{ maxWidth: 200 }} >
             <CardMedia
                 component="img"
-                alt="green iguana"
-                height="auto"
+                // height={120}
                 image={imageUrl}
             />
             <CardContent>

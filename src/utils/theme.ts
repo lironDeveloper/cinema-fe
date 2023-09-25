@@ -1,13 +1,15 @@
+import { lime } from '@mui/material/colors';
 import { createTheme } from '@mui/material/styles';
 
 const theme = createTheme({
     palette: {
         primary: {
-            main: '#4F8fC0',
+            main: '#4F8fC0'
         },
         secondary: {
-            main: '#edf2ff',
-        }
+            main: '#336699 ',
+        },
+
     },
 });
 

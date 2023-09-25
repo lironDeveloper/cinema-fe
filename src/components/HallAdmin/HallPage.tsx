@@ -9,7 +9,7 @@ import Select, { SelectChangeEvent } from '@mui/material/Select';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
 
-import Table from '../../utils/Table';
+import Table from '../GenericComponents/Table';
 import Hall from '../../interfaces/Hall';
 import HeadCell from '../../interfaces/HeadCell';
 import Branch from '../../interfaces/Branch';
@@ -20,6 +20,7 @@ import DeleteHallDialog from './DeleteHallDialog';
 import EditHallDialog from './EditHallDialog';
 import Rowable from '../../interfaces/Rowable';
 import notify from '../../utils/ErrorToast';
+import Dropdown from '../GenericComponents/Dropdown';
 
 const headCells: HeadCell<Hall>[] = [
     {
@@ -242,25 +243,12 @@ const HallPage: FC = () => {
             <Toolbar />
             {branchesMap?.size > 0 &&
                 <Box sx={{ maxWidth: 250 }}>
-                    <FormControl fullWidth>
-                        <InputLabel id="demo-simple-select-label">שם סניף</InputLabel>
-                        <Select
-                            labelId="demo-simple-select-label"
-                            id="demo-simple-select"
-                            value={currentBranch}
-                            label="branch"
-                            onChange={handleChange}
-                        >
-                            {Array.from(branchesMap.keys()).map((branchName) => (
-                                <MenuItem
-                                    key={branchName}
-                                    value={branchName}
-                                >
-                                    {branchName}
-                                </MenuItem>
-                            ))}
-                        </Select>
-                    </FormControl>
+                    <Dropdown
+                        items={Array.from(branchesMap.keys())}
+                        label='שם סניף'
+                        onChange={handleChange}
+                        value={currentBranch}
+                    />
                 </Box>}
             <Table editable={true} title='אולמות' rows={halls} headCells={headCells as HeadCell<Rowable>[]} onAdd={onAddHall} onDelete={onDeleteHall} onEdit={onEditHall} />
             <Modal isOpen={openModal} handleClose={changeModalState}>

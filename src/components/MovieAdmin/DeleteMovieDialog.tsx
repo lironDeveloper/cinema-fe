@@ -6,32 +6,27 @@ import { DialogActions, DialogContent, DialogContentText, DialogTitle, TextField
 interface Props {
     handleClose: () => void;
     title: string;
+    onDeleteMovie: () => void;
 }
 
 const DeleteMovieDialog: FC<Props> = (props) => {
-    const { handleClose, title } = props;
+    const { handleClose, title, onDeleteMovie } = props;
+
+    const onSubmit = async () => {
+        await onDeleteMovie();
+    }
 
     return (
         <>
             <DialogTitle>{title}</DialogTitle>
             <DialogContent>
                 <DialogContentText>
-                    To subscribe to this website, please enter your email address here. We
-                    will send updates occasionally.
+                    האם את/ה בטוח/ה שאת/ה רוצה למחוק סרטים אלו?
                 </DialogContentText>
-                <TextField
-                    autoFocus
-                    margin="dense"
-                    id="name"
-                    label="Email Address"
-                    type="email"
-                    fullWidth
-                    variant="standard"
-                />
             </DialogContent>
             <DialogActions>
-                <Button onClick={handleClose}>Cancel</Button>
-                <Button onClick={handleClose}>Subscribe</Button>
+                <Button onClick={handleClose}>ביטול</Button>
+                <Button onClick={onSubmit}>מחיקה</Button>
             </DialogActions>
         </>
     );

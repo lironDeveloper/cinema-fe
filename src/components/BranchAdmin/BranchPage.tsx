@@ -4,7 +4,7 @@ import { FC, useEffect, useState } from 'react';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
 
-import Table from '../../utils/Table';
+import Table from '../GenericComponents/Table';
 import Branch from '../../interfaces/Branch';
 import HeadCell from '../../interfaces/HeadCell';
 import ActionType from '../../interfaces/ActionType';

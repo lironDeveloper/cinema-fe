@@ -40,18 +40,28 @@ interface ListItem {
 }
 
 const Sidebar: FC = () => {
+    const [selectedKey, setSelectedKey] = useState<string>(''); // TOdo - infer from the uri
     const navigate = useNavigate();
     const { user } = useAuth();
 
+    const handleListItemClick = (
+        key: string
+    ) => {
+        setSelectedKey(key);
+    };
+
     const listItems = (obj: ListItem) => (
         <ListItem key={obj.key} disablePadding onClick={() => { navigate(obj.link); }}>
-            <ListItemButton>
+            <ListItemButton
+                selected={selectedKey === obj.key}
+                onClick={(event) => handleListItemClick(obj.key)}
+            >
                 <ListItemIcon>
                     {obj.icon}
                 </ListItemIcon>
                 <ListItemText primary={obj.text} />
             </ListItemButton>
-        </ListItem>
+        </ListItem >
     )
 
     return (

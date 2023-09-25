@@ -1,11 +1,14 @@
-export default interface Branch {
+import { GenreKeys } from "./Genre";
+import { LanguageKeys } from "./Language";
+
+export default interface Movie {
     id: number;
     title: string;
     description: string;
-    duration: string;
+    duration: number;
     releaseDate: string;
-    genre: "COMEDY" | "HORROR" | "DRAMA" | "KIDS" | "ACTION";
+    genre: GenreKeys;
     director: string;
-    language: "HEBREW" | "ENGLISH" | "RUSSIAN";
+    language: LanguageKeys;
     minAge: number;
 }

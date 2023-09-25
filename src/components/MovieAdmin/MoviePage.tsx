@@ -9,7 +9,7 @@ import Select, { SelectChangeEvent } from '@mui/material/Select';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
 
-import Table from '../../utils/Table';
+import Table from '../GenericComponents/Table';
 import HeadCell from '../../interfaces/HeadCell';
 import Movie from '../../interfaces/Movie';
 import CreateMovieDialog from './CreateMovieDialog';
@@ -64,27 +64,6 @@ const headCells: HeadCell<Movie>[] = [
     },
 ];
 
-const genreTranslator = (genre: string) => {
-    switch (genre) {
-        case ("COMEDY"):
-            return "קומדיה";
-        case ("HORROR"):
-            return "אימה";
-        case ("DRAMA"):
-            return "דרמה";
-        case ("KIDS"):
-            return "ילדים"
-        case ("ACTION"):
-            return "אקשן"
-        default:
-            return "לא מוכר"
-    }
-}
-
-const languageTranslator = () => {
-
-}
-
 const MoviePage: FC = () => {
     const [movies, setMovies] = useState<Movie[]>([]);
     const [openModal, setOpenModal] = useState(false);
@@ -113,8 +92,8 @@ const MoviePage: FC = () => {
                 setMovies(unformattedMovies.map((movie: Movie) => {
                     return {
                         ...movie,
-                        duration: movie.duration + " דקות",
-                        releaseDate: moment(movie.releaseDate).format('L'),
+                        // duration: movie.duration + " דקות",
+                        // releaseDate: moment(movie.releaseDate).format('L'),
                         // genre: 
                     }
                 }));
@@ -133,11 +112,15 @@ const MoviePage: FC = () => {
     const renderModal = () => {
         switch (action) {
             case 'ADD':
-                return <CreateMovieDialog handleClose={changeModalState} title={modalTitle} />
+                return <CreateMovieDialog handleClose={changeModalState} dialogTitle={modalTitle} onCreateMovie={onCreateSubmited} />
             case 'DELETE':
-                return <DeleteMovieDialog handleClose={changeModalState} title={modalTitle} />
+                return <DeleteMovieDialog handleClose={changeModalState} title={modalTitle} onDeleteMovie={onDeleteSubmited} />
             case 'EDIT':
-                return <EditMovieDialog handleClose={changeModalState} title={modalTitle} />
+                return <EditMovieDialog
+                    handleClose={changeModalState}
+                    dialogTitle={modalTitle}
+                    movie={movies.find((m: Movie) => m.id === selectedMovies[0]) || movies[0]}
+                    onEditMovie={onEditSubmited} />
             default:
                 return <></>
         }
@@ -161,6 +144,90 @@ const MoviePage: FC = () => {
     const onDeleteMovie = (actionToPerform: ActionType, title: string, selectedIds: number[]) => {
         setSelectedMovies(selectedIds);
         onAction(actionToPerform, title);
+    }
+
+    const onDeleteSubmited = async () => {
+        try {
+            selectedMovies.forEach(async movie => {
+                const response = await fetch(`http://localhost:8080/api/movie/${movie}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json',
+                    },
+                    credentials: 'include'
+                });
+
+                if (!response.ok) {
+                    const data = await response.json();
+                    throw new Error(data.errors[0]);
+                }
+            });
+            setMovies(movies.filter(m => !selectedMovies.includes(m.id)))
+            setSelectedMovies([])
+            changeModalState();
+        } catch (error: any) {
+            notify(error.message);
+        }
+    }
+
+    const onEditSubmited = async (updatedMovie: Movie) => {
+        const movieId = updatedMovie.id;
+
+        try {
+            const response = await fetch(`http://localhost:8080/api/movie/${movieId}`, {
+                method: 'PUT',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(updatedMovie),
+                credentials: 'include'
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+                setMovies((prevMovies) => {
+                    const updatedMovies = [...prevMovies];
+                    const movieIndex = updatedMovies.findIndex((movie) => movie.id === movieId);
+                    if (movieIndex !== -1) {
+                        updatedMovies[movieIndex] = { ...updatedMovies[movieIndex], ...updatedMovie };
+                    }
+                    return updatedMovies;
+                });
+                changeModalState();
+            } else {
+                throw new Error(data.errors[0]);
+            }
+        } catch (error: any) {
+            notify(error.message);
+        }
+    }
+
+    const onCreateSubmited = async (movie: Movie) => {
+        try {
+            const response = await fetch(`http://localhost:8080/api/movie`, {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(movie),
+                credentials: 'include'
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+                setMovies(movies.concat(data));
+                changeModalState();
+            } else {
+                throw new Error(data.errors[0]);
+            }
+        } catch (error: any) {
+            notify(error.message);
+        }
     }
 
     return (

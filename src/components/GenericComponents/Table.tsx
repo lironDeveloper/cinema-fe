@@ -19,11 +19,11 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 import Switch from '@mui/material/Switch';
 import DeleteIcon from '@mui/icons-material/Delete';
 import AddIcon from '@mui/icons-material/Add'; import { visuallyHidden } from '@mui/utils';
-import EditIcon from '@mui/icons-material/Edit'; import { useAuth } from '../context/AuthContext';
+import EditIcon from '@mui/icons-material/Edit'; import { useAuth } from '../../context/AuthContext';
 import { FC, useEffect } from 'react';
-import ActionType from '../interfaces/ActionType';
-import Rowable from '../interfaces/Rowable';
-import HeadCell from '../interfaces/HeadCell';
+import ActionType from '../../interfaces/ActionType';
+import Rowable from '../../interfaces/Rowable';
+import HeadCell from '../../interfaces/HeadCell';
 
 
 function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {

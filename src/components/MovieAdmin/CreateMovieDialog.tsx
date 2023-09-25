@@ -1,37 +1,148 @@
-import Backdrop from '@mui/material/Backdrop';
+import dayjs, { Dayjs } from 'dayjs';
 import Button from '@mui/material/Button';
-import { FC } from 'react';
-import { DialogActions, DialogContent, DialogContentText, DialogTitle, TextField } from '@mui/material';
+import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { ChangeEvent, FC, useState } from 'react';
+import { Box, DialogActions, DialogContent, DialogTitle, SelectChangeEvent, TextField } from '@mui/material';
+import Movie from '../../interfaces/Movie';
+import NumericInputField from '../GenericComponents/NumericInputField';
+import { GenreValues, genresMap, getGenreKeyByValue } from '../../interfaces/Genre';
+import Dropdown from '../GenericComponents/Dropdown';
+import { LanguageKeys, getLanguageKeyByValue, languageMap } from '../../interfaces/Language';
 
 interface Props {
     handleClose: () => void;
-    title: string;
+    dialogTitle: string;
+    onCreateMovie: (movie: Movie) => void;
 }
 
 const CreateMovieDialog: FC<Props> = (props) => {
-    const { handleClose, title } = props;
+    const { handleClose, dialogTitle, onCreateMovie } = props;
+
+    const [title, setTitle] = useState<string>('');
+    const [description, setDescription] = useState<string>('');
+    const [duration, setDuration] = useState<number>(0);
+    const [releaseDate, setReleaseDate] = useState<Dayjs | null>(dayjs());
+    const [genre, setGenre] = useState<GenreValues | undefined>();
+    const [director, setDirector] = useState<string>('');
+    const [language, setLanguage] = useState<LanguageKeys | undefined>();
+    const [minAge, setMinAge] = useState<number>(0);
+
+    const onSubmit = async () => {
+        const movie: Movie = {
+            id: 0,
+            title,
+            description,
+            duration,
+            releaseDate: releaseDate ? releaseDate.toISOString() : dayjs().toISOString(),
+            genre: getGenreKeyByValue(genre),
+            director,
+            language: getLanguageKeyByValue(language),
+            minAge,
+        }
+
+        await onCreateMovie(movie);
+    }
+
+    const onTitleChanged = (event: ChangeEvent<HTMLInputElement>) => {
+        setTitle(event.target.value);
+    };
+
+    const onDescriptionChanged = (event: ChangeEvent<HTMLInputElement>) => {
+        setDescription(event.target.value);
+    };
+
+    const onDurationChanged = (event: ChangeEvent<HTMLInputElement>) => {
+        setDuration(parseInt(event.target.value));
+    };
+
+    const onMinAgeChanged = (event: ChangeEvent<HTMLInputElement>) => {
+        setMinAge(parseInt(event.target.value));
+    };
+
+    const onRelaseDateChange = (newReleaseDate: Dayjs | null) => setReleaseDate(newReleaseDate);
+
+    const onGenreChanged = (event: SelectChangeEvent) => {
+        setGenre(event.target.value);
+    };
+
+    const onDirectorChanged = (event: ChangeEvent<HTMLInputElement>) => {
+        setDirector(event.target.value);
+    };
+
+    const onLangugageChanged = (event: SelectChangeEvent) => {
+        setLanguage(event.target.value);
+    };
 
     return (
         <>
-            <DialogTitle>{title}</DialogTitle>
-            <DialogContent>
-                <DialogContentText>
-                    To subscribe to this website, please enter your email address here. We
-                    will send updates occasionally.
-                </DialogContentText>
+            <DialogTitle>{dialogTitle}</DialogTitle>
+            <DialogContent >
                 <TextField
                     autoFocus
-                    margin="dense"
+                    margin="normal"
                     id="name"
-                    label="Email Address"
-                    type="email"
+                    label="שם הסרט"
                     fullWidth
-                    variant="standard"
+                    variant="outlined"
+                    value={title}
+                    onChange={onTitleChanged}
                 />
+                <TextField
+                    autoFocus
+                    margin="normal"
+                    id="name"
+                    label="תיאור"
+                    fullWidth
+                    variant="outlined"
+                    multiline={true}
+                    rows={4}
+                    value={description}
+                    onChange={onDescriptionChanged}
+                />
+                <Box display={'flex'} gap={5}>
+                    <NumericInputField value={duration} onChange={onDurationChanged} label='אורך הסרט' />
+                    <NumericInputField value={minAge} onChange={onMinAgeChanged} label='גיל מינימאלי' />
+                    <LocalizationProvider dateAdapter={AdapterDayjs}>
+                        <DatePicker
+                            autoFocus
+                            label="תאריך בכורה"
+                            value={releaseDate}
+                            minDate={dayjs('01-01-1960')}
+                            maxDate={dayjs()}
+                            onChange={onRelaseDateChange}
+                            format='DD/MM/YYYY'
+                        />
+                    </LocalizationProvider>
+                </Box>
+                <TextField
+                    autoFocus
+                    margin="normal"
+                    id="name"
+                    label="שם הבמאי"
+                    fullWidth
+                    variant="outlined"
+                    value={director}
+                    onChange={onDirectorChanged}
+                />
+                <Box display={'flex'} gap={5}>
+                    <Dropdown
+                        items={Array.from(genresMap.values())}
+                        label="ז'אנר"
+                        onChange={onGenreChanged}
+                        value={genre}
+                    />
+                    <Dropdown
+                        items={Array.from(languageMap.values())}
+                        label="שפת הסרט"
+                        onChange={onLangugageChanged}
+                        value={language}
+                    />
+                </Box>
             </DialogContent>
             <DialogActions>
-                <Button onClick={handleClose}>Cancel</Button>
-                <Button onClick={handleClose}>Subscribe</Button>
+                <Button onClick={handleClose}>ביטול</Button>
+                <Button onClick={onSubmit}>הוספה</Button>
             </DialogActions>
         </>
     );

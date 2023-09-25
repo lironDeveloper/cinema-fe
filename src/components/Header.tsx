@@ -29,15 +29,7 @@ const Search = styled('div')(({ theme }) => ({
     '&:hover': {
         backgroundColor: alpha(theme.palette.common.white, 0.25),
     },
-    // marginLeft: 0,
-    // width: 'auto',
-    // [theme.breakpoints.up('sm')]: {
-    //     marginLeft: theme.spacing(1),
-    //     width: 'auto',
-    // },
-    // marginLeft: theme.spacing(1),
     width: 'auto',
-    flexGrow: 0.5,
 }));
 
 const SearchIconWrapper = styled('div')(({ theme }) => ({
@@ -58,16 +50,12 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
     color: 'inherit',
     '& .MuiInputBase-input': {
         padding: theme.spacing(1, 1, 1, 0),
-        // vertical padding + font size from searchIcon
         paddingLeft: `calc(1em + ${theme.spacing(4)})`,
         transition: theme.transitions.create('width'),
-        // width: '100%',
-        // [theme.breakpoints.up('sm')]: {
-        width: '35ch',
+        width: '47ch',
         '&:focus': {
             width: '35ch',
         },
-        // },
     },
 }));
 
@@ -136,43 +124,45 @@ const Header: FC = () => {
     return (
         <AppBar position="fixed" sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}>
             <Toolbar >
-                <MovieIcon sx={{ display: 'flex', mr: 1 }} />
-                <Typography
-                    variant="h4"
-                    noWrap
-                    component="a"
-                    href="/"
-                    sx={{
-                        mr: 2,
-                        display: 'flex',
-                        fontWeight: 700,
-                        letterSpacing: '.3rem',
-                        color: 'inherit',
-                        textDecoration: 'none',
-                        flexGrow: 1,
-                    }}
-                >
-                    סינמה
-                </Typography>
-                <Search sx={{ display: { xs: 'none', md: 'inherit' } }}>
-
-                    <StyledInputBase
-                        placeholder="חיפוש סרט על פי מילת מפתח..."
-                        inputProps={{ 'aria-label': 'search' }}
-                        value={keyword}
-                        onChange={onkeywordChanged}
-                        onKeyDown={(event) => {
-                            if (event.key === 'Enter') {
-                                onSearch()
-                            }
+                <div style={{ display: 'flex', alignItems: 'center' }}>
+                    <MovieIcon sx={{ mr: 1 }} />
+                    <Typography
+                        variant="h4"
+                        noWrap
+                        component="a"
+                        href="/"
+                        sx={{
+                            mr: 2,
+                            fontWeight: 700,
+                            letterSpacing: '.3rem',
+                            color: 'inherit',
+                            textDecoration: 'none',
                         }}
-                    />
-                    <SearchIconWrapper >
-                        <SearchIcon onClick={onSearch} />
-                    </SearchIconWrapper>
-                </Search>
+                    >
+                        סינמה
+                    </Typography>
+                </div>
+                <div style={{ display: 'flex', alignItems: 'center', flex: 1, justifyContent: 'center' }}>
+                    <Search sx={{ display: { xs: 'none', md: 'inherit' } }}>
+                        <StyledInputBase
+                            placeholder="חיפוש סרט על פי מילת מפתח..."
+                            inputProps={{ 'aria-label': 'search' }}
+                            value={keyword}
+                            onChange={onkeywordChanged}
+                            onKeyDown={(event) => {
+                                if (event.key === 'Enter') {
+                                    onSearch()
+                                }
+                            }}
+                        />
+                        <SearchIconWrapper >
+                            <SearchIcon onClick={onSearch} />
+                        </SearchIconWrapper>
+                    </Search>
+                </div>
+
                 {user ?
-                    <Box sx={{ flexGrow: 0 }}>
+                    <div style={{ display: 'flex', alignItems: 'center' }}>
                         <Container sx={{ display: 'flex', alignItems: 'center' }}>
                             <Tooltip title="משתמש">
                                 <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
@@ -185,7 +175,7 @@ const Header: FC = () => {
                                 sx={{
                                     mr: 1,
                                     fontWeight: 700,
-                                    letterSpacing: '.3rem',
+                                    letterSpacing: '.15rem',
                                     color: 'inherit',
                                     textDecoration: 'none',
                                     flexGrow: 1,
@@ -222,7 +212,7 @@ const Header: FC = () => {
                                 </ListItemIcon> התנתק/י
                             </MenuItem>
                         </Menu>
-                    </Box> : null}
+                    </div> : null}
             </Toolbar>
         </AppBar>
     );
