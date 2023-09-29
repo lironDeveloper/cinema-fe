@@ -1,4 +1,4 @@
-import * as React from 'react';
+import { FC, useEffect, useState, MouseEvent, useMemo, ChangeEvent } from 'react';
 import { alpha } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import Table from '@mui/material/Table';
@@ -15,14 +15,11 @@ import Paper from '@mui/material/Paper';
 import Checkbox from '@mui/material/Checkbox';
 import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Switch from '@mui/material/Switch';
 import DeleteIcon from '@mui/icons-material/Delete';
 import AddIcon from '@mui/icons-material/Add'; import { visuallyHidden } from '@mui/utils';
-import EditIcon from '@mui/icons-material/Edit'; import { useAuth } from '../../context/AuthContext';
-import { FC, useEffect } from 'react';
+import EditIcon from '@mui/icons-material/Edit';
 import ActionType from '../../interfaces/ActionType';
-import Rowable from '../../interfaces/Rowable';
+import TableRowDisplay from '../../interfaces/TableRowDisplay';
 import HeadCell from '../../interfaces/HeadCell';
 
 
@@ -38,7 +35,7 @@ function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
 
 type Order = 'asc' | 'desc';
 
-function getComparator<Key extends keyof Rowable>(
+function getComparator<Key extends keyof TableRowDisplay>(
     order: Order,
     orderBy: Key,
 ): (
@@ -50,33 +47,21 @@ function getComparator<Key extends keyof Rowable>(
         : (a, b) => -descendingComparator(a, b, orderBy);
 }
 
-// function stableSort(array: Rowable[], comparator: (a: Rowable, b: Rowable) => number) {
-//     const stabilizedThis = array.map((el, index) => [el, index] as [Rowable, number]);
-//     stabilizedThis.sort((a, b) => {
-//         const order = comparator(a[0], b[0]);
-//         if (order !== 0) {
-//             return order;
-//         }
-//         return a[1] - b[1];
-//     });
-//     return stabilizedThis.map((el) => el[0]);
-// }
-
 interface EnhancedTableProps {
     numSelected: number;
-    onRequestSort: (event: React.MouseEvent<unknown>, property: any) => void;
-    onSelectAllClick: (event: React.ChangeEvent<HTMLInputElement>) => void;
+    onRequestSort: (event: MouseEvent<unknown>, property: any) => void;
+    onSelectAllClick: (event: ChangeEvent<HTMLInputElement>) => void;
     order: Order;
     orderBy: string;
     rowCount: number;
-    headCells: HeadCell<Rowable>[];
+    headCells: HeadCell<TableRowDisplay>[];
 }
 
 function EnhancedTableHead(props: EnhancedTableProps) {
     const { onSelectAllClick, order, orderBy, numSelected, rowCount, onRequestSort } =
         props;
     const createSortHandler =
-        (property: any) => (event: React.MouseEvent<unknown>) => {
+        (property: any) => (event: MouseEvent<unknown>) => {
             onRequestSort(event, property);
         };
 
@@ -98,7 +83,7 @@ function EnhancedTableHead(props: EnhancedTableProps) {
                     <TableCell
                         key={headCell.id}
                         align={'right'}
-                        padding={headCell.disablePadding ? 'none' : 'normal'}
+                        padding='normal'
                         sortDirection={orderBy === headCell.id ? order : false}
                     >
                         <TableSortLabel
@@ -189,24 +174,28 @@ function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
 interface TableProps {
     editable: boolean;
     title: string;
-    rows: Rowable[];
-    headCells: HeadCell<Rowable>[];
+    rows: TableRowDisplay[];
+    headCells: HeadCell<TableRowDisplay>[];
     onAdd: (action: ActionType, title: string) => void;
     onEdit?: (action: ActionType, title: string, selectedId: number) => void;
     onDelete: (action: ActionType, title: string, selectedIds: number[]) => void;
-
+    triggerUnselect: boolean;
 }
 
 const TableCinema: FC<TableProps> = (props) => {
-    const { editable, title, rows, headCells, onAdd, onEdit, onDelete } = props;
-    const [order, setOrder] = React.useState<Order>('asc');
-    const [orderBy, setOrderBy] = React.useState<keyof Rowable>('id');
-    const [selected, setSelected] = React.useState<number[]>([]);
-    const [page, setPage] = React.useState(0);
-    const [rowsPerPage, setRowsPerPage] = React.useState(10);
+    const { editable, title, rows, headCells, onAdd, onEdit, onDelete, triggerUnselect } = props;
+    const [order, setOrder] = useState<Order>('asc');
+    const [orderBy, setOrderBy] = useState<keyof TableRowDisplay>('id');
+    const [selected, setSelected] = useState<number[]>([]);
+    const [page, setPage] = useState(0);
+    const [rowsPerPage, setRowsPerPage] = useState(10);
+
+    useEffect(() => {
+        setSelected([]);
+    }, [triggerUnselect])
 
     const handleRequestSort = (
-        event: React.MouseEvent<unknown>,
+        event: MouseEvent<unknown>,
         property: any,
     ) => {
         const isAsc = orderBy === property && order === 'asc';
@@ -214,16 +203,16 @@ const TableCinema: FC<TableProps> = (props) => {
         setOrderBy(property);
     };
 
-    const handleSelectAllClick = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const handleSelectAllClick = (event: ChangeEvent<HTMLInputElement>) => {
         if (event.target.checked) {
-            const newSelected = rows.map((n: Rowable) => n.id);
+            const newSelected = rows.map((n: TableRowDisplay) => n.id);
             setSelected(newSelected);
             return;
         }
         setSelected([]);
     };
 
-    const handleClick = (event: React.MouseEvent<unknown>, name: number) => {
+    const handleClick = (event: MouseEvent<unknown>, name: number) => {
         const selectedIndex: number = selected.indexOf(name);
         let newSelected: number[] = [];
 
@@ -247,7 +236,7 @@ const TableCinema: FC<TableProps> = (props) => {
         setPage(newPage);
     };
 
-    const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const handleChangeRowsPerPage = (event: ChangeEvent<HTMLInputElement>) => {
         setRowsPerPage(parseInt(event.target.value, 10));
         setPage(0);
     };
@@ -259,7 +248,7 @@ const TableCinema: FC<TableProps> = (props) => {
     const emptyRows =
         page > 0 ? Math.max(0, (1 + page) * rowsPerPage - props.rows.length) : 0;
 
-    const visibleRows = React.useMemo(
+    const visibleRows = useMemo(
         () =>
             rows.slice(
                 page * rowsPerPage,

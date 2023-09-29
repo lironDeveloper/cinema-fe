@@ -9,6 +9,8 @@ import NumericInputField from '../GenericComponents/NumericInputField';
 import { GenreValues, genresMap, getGenreKeyByValue } from '../../interfaces/Genre';
 import Dropdown from '../GenericComponents/Dropdown';
 import { LanguageKeys, getLanguageKeyByValue, languageMap } from '../../interfaces/Language';
+import ImageUploader from './ThumbnailUploader';
+import ThumbnailUploader from './ThumbnailUploader';
 
 interface Props {
     handleClose: () => void;
@@ -100,7 +102,7 @@ const CreateMovieDialog: FC<Props> = (props) => {
                     value={description}
                     onChange={onDescriptionChanged}
                 />
-                <Box display={'flex'} gap={5}>
+                <Box display={'flex'} gap={5} marginTop={'16px'}>
                     <NumericInputField value={duration} onChange={onDurationChanged} label='אורך הסרט' />
                     <NumericInputField value={minAge} onChange={onMinAgeChanged} label='גיל מינימאלי' />
                     <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -139,6 +141,7 @@ const CreateMovieDialog: FC<Props> = (props) => {
                         value={language}
                     />
                 </Box>
+                <ThumbnailUploader />
             </DialogContent>
             <DialogActions>
                 <Button onClick={handleClose}>ביטול</Button>

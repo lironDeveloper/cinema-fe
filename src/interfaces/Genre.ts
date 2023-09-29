@@ -6,10 +6,14 @@ export const genresMap = new Map<string, string>([
     ["ACTION", "אקשן"],
 ]);
 export const getGenreKeyByValue = (searchValue: string | undefined): string => {
-    for (const [key, value] of genresMap.entries()) {
+    const entries = genresMap.entries();
+    let result = entries.next();
+    while (!result.done) {
+        const [key, value] = result.value;
         if (value === searchValue) {
             return key;
         }
+        result = entries.next();
     }
     return "לא מוכר";
 };

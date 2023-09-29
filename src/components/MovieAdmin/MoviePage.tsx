@@ -17,65 +17,72 @@ import Modal from '../../utils/Modal';
 import ActionType from '../../interfaces/ActionType';
 import DeleteMovieDialog from './DeleteMovieDialog';
 import EditMovieDialog from './EditMovieDialog';
-import Rowable from '../../interfaces/Rowable';
+import Adminable from '../../interfaces/Adminable';
 import notify from '../../utils/ErrorToast';
 import moment from 'moment';
+import TableRowDisplay from '../../interfaces/TableRowDisplay';
+import MovieRow from '../../interfaces/MovieRow';
+import dayjs from 'dayjs';
+import { genresMap } from '../../interfaces/Genre';
+import { languageMap } from '../../interfaces/Language';
 
-const headCells: HeadCell<Movie>[] = [
+const headCells: HeadCell<MovieRow>[] = [
+    // {
+    //     id: 'thumbnail',
+    //     label: 'תמונת נושא',
+    // },
     {
         id: 'title',
-        disablePadding: true,
         label: 'שם הסרט',
     },
     {
         id: 'description',
-        disablePadding: false,
         label: 'תיאור',
     },
     {
         id: 'duration',
-        disablePadding: false,
         label: 'אורך הסרט',
     },
     {
         id: 'releaseDate',
-        disablePadding: false,
         label: 'תאריך בכורה',
     },
     {
         id: 'genre',
-        disablePadding: false,
         label: "ז'אנר",
     },
     {
         id: 'director',
-        disablePadding: false,
         label: 'במאי',
     },
     {
         id: 'language',
-        disablePadding: false,
         label: 'שפה',
     },
     {
         id: 'minAge',
-        disablePadding: false,
         label: 'מותר מגיל',
     },
 ];
 
 const MoviePage: FC = () => {
     const [movies, setMovies] = useState<Movie[]>([]);
+    const [rows, setRows] = useState<MovieRow[]>([]);
     const [openModal, setOpenModal] = useState(false);
     const [modalTitle, setModalTitle] = useState('');
     const [action, setAction] = useState<ActionType>("ADD");
     const [selectedMovies, setSelectedMovies] = useState<number[]>([]);
+    const [triggerUnselect, setTriggerUnselect] = useState<boolean>(true);
 
     const { token } = useAuth();
 
     useEffect(() => {
         fetchMovies();
     }, []);
+
+    useEffect(() => {
+        parseRows();
+    }, [movies]);
 
     const fetchMovies = async () => {
         try {
@@ -88,15 +95,7 @@ const MoviePage: FC = () => {
 
             const data = await response.json();
             if (response.ok) {
-                const unformattedMovies: Movie[] = data;
-                setMovies(unformattedMovies.map((movie: Movie) => {
-                    return {
-                        ...movie,
-                        // duration: movie.duration + " דקות",
-                        // releaseDate: moment(movie.releaseDate).format('L'),
-                        // genre: 
-                    }
-                }));
+                setMovies(data);
             } else {
                 throw new Error(data.errors[0]);
             }
@@ -104,6 +103,22 @@ const MoviePage: FC = () => {
             notify(error.message);
         }
     };
+
+    const parseRows = () => {
+        let x: MovieRow[] = movies.map((m: Movie) => {
+            return {
+                ...m,
+                duration: m.duration + " דקות",
+                releaseDate: dayjs(m.releaseDate).format('DD/MM/YYYY').toString(),
+                genre: genresMap.get(m.genre),
+                language: languageMap.get(m.language),
+                // thumbnail: (
+                //     <img src={""} />
+                // )
+            }
+        })
+        setRows(x);
+    }
 
     const changeModalState = () => {
         setOpenModal(!openModal);
@@ -164,7 +179,8 @@ const MoviePage: FC = () => {
                 }
             });
             setMovies(movies.filter(m => !selectedMovies.includes(m.id)))
-            setSelectedMovies([])
+            setSelectedMovies([]);
+            setTriggerUnselect(!triggerUnselect);
             changeModalState();
         } catch (error: any) {
             notify(error.message);
@@ -236,11 +252,12 @@ const MoviePage: FC = () => {
             <Table
                 editable={true}
                 title='סרטים'
-                rows={movies}
-                headCells={headCells as HeadCell<Rowable>[]}
+                rows={rows}
+                headCells={headCells as HeadCell<TableRowDisplay>[]}
                 onAdd={onAddMovie}
                 onEdit={onEditMovie}
                 onDelete={onDeleteMovie}
+                triggerUnselect={triggerUnselect}
             />
             <Modal isOpen={openModal} handleClose={changeModalState}>
                 {renderModal()}

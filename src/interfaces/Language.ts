@@ -4,10 +4,14 @@ export const languageMap = new Map<string, string>([
     ["RUSSIAN", "רוסית"],
 ]);
 export const getLanguageKeyByValue = (searchValue: string | undefined): string => {
-    for (const [key, value] of languageMap.entries()) {
+    const entries = languageMap.entries();
+    let result = entries.next();
+    while (!result.done) {
+        const [key, value] = result.value;
         if (value === searchValue) {
             return key;
         }
+        result = entries.next();
     }
     return "לא מוכר";
 };

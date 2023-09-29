@@ -12,43 +12,47 @@ import CreateBranchDialog from './CreateBranchDialog';
 import DeleteBranchDialog from './DeleteBranchDialog';
 import Modal from '../../utils/Modal';
 import notify from '../../utils/ErrorToast';
-import Rowable from '../../interfaces/Rowable';
+import Adminable from '../../interfaces/Adminable';
+import TableRowDisplay from '../../interfaces/TableRowDisplay';
+import BranchRow from '../../interfaces/BranchRow';
 
 const headCells: HeadCell<Branch>[] = [
     {
         id: 'name',
-        disablePadding: true,
         label: 'שם הסניף',
     },
     {
         id: 'city',
-        disablePadding: false,
         label: 'עיר',
     },
     {
         id: 'address',
-        disablePadding: false,
         label: 'כתובת',
     },
     {
         id: 'contactInfo',
-        disablePadding: false,
         label: 'פרטי איש קשר',
     },
 ];
 
 const BranchPage: FC = () => {
     const [branches, setBranches] = useState<Branch[]>([]);
+    const [rows, setRows] = useState<BranchRow[]>([]);
     const [openModal, setOpenModal] = useState(false);
     const [modalTitle, setModalTitle] = useState('');
     const [action, setAction] = useState<ActionType>("ADD");
     const [selectedBranches, setSelectedBranches] = useState<number[]>([]);
+    const [triggerUnselect, setTriggerUnselect] = useState<boolean>(true);
 
     const { token } = useAuth();
 
     useEffect(() => {
         fetchBranches();
     }, []);
+
+    useEffect(() => {
+        parseRows();
+    }, [branches]);
 
     const fetchBranches = async () => {
         try {
@@ -71,6 +75,13 @@ const BranchPage: FC = () => {
         }
     };
 
+    const parseRows = () => {
+        setRows(branches.map((b: Branch) => {
+            return {
+                ...b
+            }
+        }));
+    }
 
     const changeModalState = () => {
         setOpenModal(!openModal);
@@ -119,7 +130,8 @@ const BranchPage: FC = () => {
                 }
             });
             setBranches(branches.filter(b => !selectedBranches.includes(b.id)))
-            setSelectedBranches([])
+            setSelectedBranches([]);
+            setTriggerUnselect(!triggerUnselect);
             changeModalState();
         } catch (error: any) {
             notify(error.message);
@@ -155,7 +167,15 @@ const BranchPage: FC = () => {
     return (
         <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
             <Toolbar />
-            <Table editable={false} title='סניפים' rows={branches} headCells={headCells as HeadCell<Rowable>[]} onAdd={onAddBranch} onDelete={onDeleteBranch} />
+            <Table
+                editable={false}
+                title='סניפים'
+                rows={rows}
+                headCells={headCells as HeadCell<TableRowDisplay>[]}
+                onAdd={onAddBranch}
+                onDelete={onDeleteBranch}
+                triggerUnselect={triggerUnselect}
+            />
             <Modal isOpen={openModal} handleClose={changeModalState}>
                 {renderModal()}
             </Modal>

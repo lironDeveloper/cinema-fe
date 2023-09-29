@@ -13,6 +13,7 @@ import CssBaseline from '@mui/material/CssBaseline';
 import HallPage from './components/HallAdmin/HallPage';
 import BranchPage from './components/BranchAdmin/BranchPage';
 import MoviePage from './components/MovieAdmin/MoviePage';
+import ShowtimePage from './components/ShowtimeAdmin/ShowtimePage';
 
 function App() {
   const location = useLocation();
@@ -76,7 +77,7 @@ function App() {
                 path="showtime"
                 element={
                   <ProtectedRoute>
-                    <div>st page</div>
+                    <ShowtimePage />
                   </ProtectedRoute>
                 }
               />

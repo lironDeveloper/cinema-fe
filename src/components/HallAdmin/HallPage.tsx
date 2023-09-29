@@ -18,24 +18,23 @@ import Modal from '../../utils/Modal';
 import CreateHallDialog from './CreateHallDialog';
 import DeleteHallDialog from './DeleteHallDialog';
 import EditHallDialog from './EditHallDialog';
-import Rowable from '../../interfaces/Rowable';
+import Adminable from '../../interfaces/Adminable';
 import notify from '../../utils/ErrorToast';
 import Dropdown from '../GenericComponents/Dropdown';
+import TableRowDisplay from '../../interfaces/TableRowDisplay';
+import HallRow from '../../interfaces/HallRow';
 
 const headCells: HeadCell<Hall>[] = [
     {
         id: 'name',
-        disablePadding: true,
         label: 'שם האולם',
     },
     {
         id: 'numOfRows',
-        disablePadding: false,
         label: 'מספר שורות',
     },
     {
         id: 'numOfColumns',
-        disablePadding: false,
         label: 'מספר עמודות',
     }
 ];
@@ -45,11 +44,13 @@ const HallPage: FC = () => {
     const [branchesMap, setBranchesMap] = useState<Map<string, number>>(new Map());
     const [currentBranch, setCurrentBranch] = useState<string>('');
     const [halls, setHalls] = useState<Hall[]>([]);
+    const [rows, setRows] = useState<HallRow[]>([]);
 
     const [openModal, setOpenModal] = useState(false);
     const [modalTitle, setModalTitle] = useState('');
     const [action, setAction] = useState<ActionType>("ADD");
     const [selectedHalls, setSelectedHalls] = useState<number[]>([]);
+    const [triggerUnselect, setTriggerUnselect] = useState<boolean>(true);
 
     const { token } = useAuth();
 
@@ -59,7 +60,11 @@ const HallPage: FC = () => {
 
     useEffect(() => {
         fetchHalls();
-    }, [currentBranch])
+    }, [currentBranch]);
+
+    useEffect(() => {
+        parseRows();
+    }, [halls]);
 
     const fetchBranches = async () => {
         try {
@@ -108,6 +113,14 @@ const HallPage: FC = () => {
             notify(error.message);
         }
     };
+
+    const parseRows = () => {
+        setRows(halls.map((h: Hall) => {
+            return {
+                ...h
+            }
+        }));
+    }
 
     const onCreateSubmited = async (hall: Hall) => {
         try {
@@ -187,13 +200,14 @@ const HallPage: FC = () => {
             });
             setHalls(halls.filter(h => !selectedHalls.includes(h.id)))
             setSelectedHalls([])
+            setTriggerUnselect(!triggerUnselect);
             changeModalState();
         } catch (error: any) {
             notify(error.message);
         }
     }
 
-    const handleChange = (event: SelectChangeEvent) => {
+    const handleBranchChange = (event: SelectChangeEvent) => {
         setCurrentBranch(event.target.value);
     };
 
@@ -246,11 +260,20 @@ const HallPage: FC = () => {
                     <Dropdown
                         items={Array.from(branchesMap.keys())}
                         label='שם סניף'
-                        onChange={handleChange}
+                        onChange={handleBranchChange}
                         value={currentBranch}
                     />
                 </Box>}
-            <Table editable={true} title='אולמות' rows={halls} headCells={headCells as HeadCell<Rowable>[]} onAdd={onAddHall} onDelete={onDeleteHall} onEdit={onEditHall} />
+            <Table
+                editable={true}
+                title='אולמות'
+                rows={rows}
+                headCells={headCells as HeadCell<TableRowDisplay>[]}
+                onAdd={onAddHall}
+                onDelete={onDeleteHall}
+                onEdit={onEditHall}
+                triggerUnselect={triggerUnselect}
+            />
             <Modal isOpen={openModal} handleClose={changeModalState}>
                 {renderModal()}
             </Modal>
