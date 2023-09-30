@@ -55,14 +55,14 @@ const Home: React.FC = () => {
     return (
         <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
             <Toolbar />
-            <Box  >
+            <Box sx={{ display: 'flex', flexDirection: 'column', gap: '30px' }} >
                 {
                     Array.from(moviesByGenre.entries()).map(([genre, movies]) => (
                         <Box sx={{ display: 'flex', flexDirection: 'column', gap: '1.5vh' }}>
                             <Typography variant='h6' fontWeight={'bold'}>{genresMap.get(genre)}</Typography >
-                            <Box sx={{ display: 'flex', gap: '3vw' }}>
+                            <Box sx={{ display: 'flex', gap: '3vw', flexWrap: 'wrap' }}>
                                 {movies.map((movie: Movie) => (
-                                    <MovieCard title={movie.title} thumnailURL={`http://localhost:8080/api/movie/thumbnail/${movie.id}`} />
+                                    <MovieCard movie={movie} thumnailURL={`http://localhost:8080/api/movie/thumbnail/${movie.id}`} />
                                 ))}
                             </Box>
                         </Box>

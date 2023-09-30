@@ -15,6 +15,12 @@ import BranchPage from './components/BranchAdmin/BranchPage';
 import MoviePage from './components/MovieAdmin/MoviePage';
 import ShowtimePage from './components/ShowtimeAdmin/ShowtimePage';
 import ManageUsersPage from './components/ManageUsersPage/ManageUsersPage';
+import { styled } from '@mui/material';
+import SearchPage from './components/SearchPage';
+
+const SideBarController = styled('div')(({ theme }) => ({
+
+}));
 
 function App() {
   const location = useLocation();
@@ -35,7 +41,9 @@ function App() {
             // <Box sx={{ display: 'flex' }}>
             <div>
               <Header />
-              <Sidebar />
+              <SideBarController sx={{ display: { xs: 'none', md: 'inherit' } }}>
+                <Sidebar />
+              </SideBarController>
             </div>
           }
           <Routes>
@@ -103,7 +111,7 @@ function App() {
               path="/search"
               element={
                 <ProtectedRoute>
-                  <div>search results</div>
+                  <SearchPage />
                 </ProtectedRoute>
               }
             />

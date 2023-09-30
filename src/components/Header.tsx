@@ -59,7 +59,13 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
     },
 }));
 
-const pages = ['הזמנת כרטיס'];
+const LogoWrapper = styled('div')(({ theme }) => ({
+    display: 'flex',
+    alignItems: 'center',
+    "&:hover": {
+        cursor: 'pointer'
+    }
+}));
 
 const Header: FC = () => {
     const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(null);
@@ -124,13 +130,13 @@ const Header: FC = () => {
     return (
         <AppBar position="fixed" sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}>
             <Toolbar >
-                <div style={{ display: 'flex', alignItems: 'center' }}>
+                <LogoWrapper>
                     <MovieIcon sx={{ mr: 1 }} />
                     <Typography
                         variant="h4"
                         noWrap
                         component="a"
-                        href="/"
+                        onClick={() => { navigate("/") }}
                         sx={{
                             mr: 2,
                             fontWeight: 700,
@@ -141,7 +147,7 @@ const Header: FC = () => {
                     >
                         סינמה
                     </Typography>
-                </div>
+                </LogoWrapper>
                 <div style={{ display: 'flex', alignItems: 'center', flex: 1, justifyContent: 'center' }}>
                     <Search sx={{ display: { xs: 'none', md: 'inherit' } }}>
                         <StyledInputBase
