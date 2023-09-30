@@ -11,22 +11,24 @@ import Toolbar from '@mui/material/Toolbar';
 
 import Table from '../GenericComponents/Table';
 import HeadCell from '../../interfaces/HeadCell';
-import Movie from '../../interfaces/Movie';
+import Movie from '../../interfaces/Movie/Movie';
 import Modal from '../../utils/Modal';
 import ActionType from '../../interfaces/ActionType';
 
 import Adminable from '../../interfaces/Adminable';
 import notify from '../../utils/ErrorToast';
 import moment from 'moment';
-import Showtime from '../../interfaces/Showtime';
-import Branch from '../../interfaces/Branch';
+import Showtime from '../../interfaces/Showtime/Showtime';
+import Branch from '../../interfaces/Branch/Branch';
 import Dropdown from '../GenericComponents/Dropdown';
 import CreateShowtimeDialog from './CreateShowtimeDialog';
 import DeleteShowtimeDialog from './DeleteShowtimeDialog';
 import EditShowtimeDialog from './EditShowtimeDialog';
-import ShowtimeRow from '../../interfaces/ShowtimeRow';
+import ShowtimeRow from '../../interfaces/Showtime/ShowtimeRow';
 import TableRowDisplay from '../../interfaces/TableRowDisplay';
 import dayjs from 'dayjs';
+import ShowtimeUpdate from '../../interfaces/Showtime/ShowtimeUpdate';
+import ShowtimeCreation from '../../interfaces/Showtime/ShowtimeCraetion';
 
 const headCells: HeadCell<ShowtimeRow>[] = [
     {
@@ -54,9 +56,9 @@ const headCells: HeadCell<ShowtimeRow>[] = [
 const ShowtimePage: FC = () => {
     const [showtimes, setShowtimes] = useState<Showtime[]>([]);
     const [rows, setRows] = useState<ShowtimeRow[]>([]);
-    const [branchesMap, setBranchesMap] = useState<Map<string, number>>(new Map());
+    const [branchesMap, setBranchesMap] = useState<Map<string, Branch>>(new Map());
     const [currentBranch, setCurrentBranch] = useState<string>('');
-    const [moviesMap, setMoviesMap] = useState<Map<string, number>>(new Map());
+    const [moviesMap, setMoviesMap] = useState<Map<string, Movie>>(new Map());
     const [currentMovie, setCurrentMovie] = useState<string>('');
 
     const [openModal, setOpenModal] = useState(false);
@@ -90,9 +92,9 @@ const ShowtimePage: FC = () => {
 
             const data = await response.json();
             if (response.ok) {
-                const updatedMap: Map<string, number> = new Map(branchesMap);
+                const updatedMap: Map<string, Branch> = new Map(branchesMap);
                 data.forEach((branch: Branch) => {
-                    updatedMap.set(branch.name, branch.id);
+                    updatedMap.set(branch.name, branch);
                 });
                 setBranchesMap(updatedMap);
                 setCurrentBranch(data[0].name);
@@ -115,9 +117,9 @@ const ShowtimePage: FC = () => {
 
             const data = await response.json();
             if (response.ok) {
-                const updatedMap: Map<string, number> = new Map(moviesMap);
+                const updatedMap: Map<string, Movie> = new Map(moviesMap);
                 data.forEach((movie: Movie) => {
-                    updatedMap.set(movie.title, movie.id);
+                    updatedMap.set(movie.title, movie);
                 });
                 setMoviesMap(updatedMap);
                 setCurrentMovie(data[0].title);
@@ -132,7 +134,7 @@ const ShowtimePage: FC = () => {
     const fetchShowtimes = async () => {
         try {
             if (branchesMap.size > 0 && moviesMap.size > 0) {
-                const response = await fetch(`http://localhost:8080/api/showtime/movie/${moviesMap.get(currentMovie)}/branch/${branchesMap.get(currentBranch)}`, {
+                const response = await fetch(`http://localhost:8080/api/showtime/movie/${moviesMap.get(currentMovie)!.id}/branch/${branchesMap.get(currentBranch)!.id}`, {
                     headers: {
                         'Authorization': `Bearer ${token}`
                     },
@@ -183,8 +185,8 @@ const ShowtimePage: FC = () => {
                 return <CreateShowtimeDialog
                     handleClose={changeModalState}
                     title={modalTitle}
-                    branchId={branchesMap.get(currentBranch)}
-                    movieId={moviesMap.get(currentMovie)}
+                    branch={branchesMap.get(currentBranch) as Branch}
+                    movie={moviesMap.get(currentMovie) as Movie}
                     onCreateShowtime={onCreateSubmited}
                 />
             case 'DELETE':
@@ -197,9 +199,10 @@ const ShowtimePage: FC = () => {
                 return <EditShowtimeDialog
                     handleClose={changeModalState}
                     title={modalTitle}
-                    branchId={branchesMap.get(currentBranch)}
-                    movieId={moviesMap.get(currentMovie)}
-                    onEditShowtime={onEditSubmited} />
+                    branch={branchesMap.get(currentBranch) as Branch}
+                    movie={moviesMap.get(currentMovie) as Movie}
+                    onEditShowtime={onEditSubmited}
+                    showtime={showtimes.find((st: Showtime) => st.id === selectedShowtimes[0]) as Showtime} />
             default:
                 return <></>
         }
@@ -250,8 +253,8 @@ const ShowtimePage: FC = () => {
         }
     }
 
-    const onEditSubmited = async (updatedShowtime: Showtime) => {
-        const showtimeId = updatedShowtime.id;
+    const onEditSubmited = async (updatedShowtime: ShowtimeUpdate) => {
+        const showtimeId = selectedShowtimes[0];
 
         try {
             const response = await fetch(`http://localhost:8080/api/showtime/${showtimeId}`, {
@@ -267,11 +270,12 @@ const ShowtimePage: FC = () => {
             const data = await response.json();
 
             if (response.ok) {
-                setShowtimes((prevMovies) => {
-                    const updatedShowtimes = [...prevMovies];
+                let newShowtime: Showtime = data as Showtime;
+                setShowtimes((prevShowtimes) => {
+                    const updatedShowtimes = [...prevShowtimes];
                     const showtimeIndex = updatedShowtimes.findIndex((showtime) => showtime.id === showtimeId);
                     if (showtimeIndex !== -1) {
-                        updatedShowtimes[showtimeIndex] = { ...updatedShowtimes[showtimeIndex], ...updatedShowtime };
+                        updatedShowtimes[showtimeIndex] = { ...updatedShowtimes[showtimeIndex], ...newShowtime };
                     }
                     return updatedShowtimes;
                 });
@@ -284,7 +288,7 @@ const ShowtimePage: FC = () => {
         }
     }
 
-    const onCreateSubmited = async (showtime: Showtime) => {
+    const onCreateSubmited = async (showtime: ShowtimeCreation) => {
         try {
             const response = await fetch(`http://localhost:8080/api/showtime`, {
                 method: 'POST',

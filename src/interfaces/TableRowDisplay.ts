@@ -1,8 +1,8 @@
-import BranchRow from "./BranchRow";
-import HallRow from "./HallRow";
-import MovieRow from "./MovieRow";
-import ShowtimeRow from "./ShowtimeRow";
-import UserRow from "./UserRow";
+import BranchRow from "./Branch/BranchRow";
+import HallRow from "./Hall/HallRow";
+import MovieRow from "./Movie/MovieRow";
+import ShowtimeRow from "./Showtime/ShowtimeRow";
+import UserRow from "./User/UserRow";
 
 
 type TableRowDisplay = MovieRow | HallRow | BranchRow | ShowtimeRow | UserRow;

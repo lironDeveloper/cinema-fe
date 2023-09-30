@@ -10,9 +10,9 @@ import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
 
 import Table from '../GenericComponents/Table';
-import Hall from '../../interfaces/Hall';
+import Hall from '../../interfaces/Hall/Hall';
 import HeadCell from '../../interfaces/HeadCell';
-import Branch from '../../interfaces/Branch';
+import Branch from '../../interfaces/Branch/Branch';
 import ActionType from '../../interfaces/ActionType';
 import Modal from '../../utils/Modal';
 import CreateHallDialog from './CreateHallDialog';
@@ -22,7 +22,9 @@ import Adminable from '../../interfaces/Adminable';
 import notify from '../../utils/ErrorToast';
 import Dropdown from '../GenericComponents/Dropdown';
 import TableRowDisplay from '../../interfaces/TableRowDisplay';
-import HallRow from '../../interfaces/HallRow';
+import HallRow from '../../interfaces/Hall/HallRow';
+import HallCreation from '../../interfaces/Hall/HallCreation';
+import HallUpdate from '../../interfaces/Hall/HallUpdate';
 
 const headCells: HeadCell<Hall>[] = [
     {
@@ -121,7 +123,7 @@ const HallPage: FC = () => {
         }));
     }
 
-    const onCreateSubmited = async (hall: Hall) => {
+    const onCreateSubmited = async (hall: HallCreation) => {
         try {
             const response = await fetch(`http://localhost:8080/api/hall`, {
                 method: 'POST',
@@ -146,8 +148,8 @@ const HallPage: FC = () => {
         }
     }
 
-    const onEditSubmited = async (updatedHall: Hall) => {
-        const hallId = updatedHall.id;
+    const onEditSubmited = async (updatedHall: HallUpdate) => {
+        const hallId = selectedHalls[0];
 
         try {
             const response = await fetch(`http://localhost:8080/api/hall/${hallId}`, {
@@ -212,7 +214,7 @@ const HallPage: FC = () => {
     const renderModal = () => {
         switch (action) {
             case 'ADD':
-                return <CreateHallDialog handleClose={changeModalState} title={modalTitle} branchId={branchesMap.get(currentBranch)} onCreateHall={onCreateSubmited} />
+                return <CreateHallDialog handleClose={changeModalState} title={modalTitle} branchId={branchesMap.get(currentBranch) as number} onCreateHall={onCreateSubmited} />
             case 'DELETE':
                 return <DeleteHallDialog handleClose={changeModalState} title={modalTitle} onDeleteHall={onDeleteSubmited} />
             case 'EDIT':
@@ -220,7 +222,7 @@ const HallPage: FC = () => {
                     handleClose={changeModalState}
                     title={modalTitle}
                     onEditHall={onEditSubmited}
-                    hall={halls.find((h: Hall) => h.id === selectedHalls[0]) || halls[0]} />
+                    hall={halls.find((h: Hall) => h.id === selectedHalls[0]) as Hall} />
             default:
                 return <></>
         }

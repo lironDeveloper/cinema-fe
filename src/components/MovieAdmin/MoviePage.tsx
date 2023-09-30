@@ -11,7 +11,7 @@ import Toolbar from '@mui/material/Toolbar';
 
 import Table from '../GenericComponents/Table';
 import HeadCell from '../../interfaces/HeadCell';
-import Movie from '../../interfaces/Movie';
+import Movie from '../../interfaces/Movie/Movie';
 import CreateMovieDialog from './CreateMovieDialog';
 import Modal from '../../utils/Modal';
 import ActionType from '../../interfaces/ActionType';
@@ -21,10 +21,12 @@ import Adminable from '../../interfaces/Adminable';
 import notify from '../../utils/ErrorToast';
 import moment from 'moment';
 import TableRowDisplay from '../../interfaces/TableRowDisplay';
-import MovieRow from '../../interfaces/MovieRow';
+import MovieRow from '../../interfaces/Movie/MovieRow';
 import dayjs from 'dayjs';
 import { genresMap } from '../../interfaces/Genre';
 import { languageMap } from '../../interfaces/Language';
+import MovieUpdate from '../../interfaces/Movie/MovieUpdate';
+import MovieCreation from '../../interfaces/Movie/MovieCreation';
 
 const headCells: HeadCell<MovieRow>[] = [
     // {
@@ -104,7 +106,7 @@ const MoviePage: FC = () => {
     };
 
     const parseRows = () => {
-        let x: MovieRow[] = movies.map((m: Movie) => {
+        setRows(movies.map((m: Movie) => {
             return {
                 ...m,
                 duration: m.duration + " דקות",
@@ -115,8 +117,7 @@ const MoviePage: FC = () => {
                 //     <img src={""} />
                 // )
             }
-        })
-        setRows(x);
+        }));
     }
 
     const changeModalState = () => {
@@ -133,7 +134,7 @@ const MoviePage: FC = () => {
                 return <EditMovieDialog
                     handleClose={changeModalState}
                     dialogTitle={modalTitle}
-                    movie={movies.find((m: Movie) => m.id === selectedMovies[0]) || movies[0]}
+                    movie={movies.find((m: Movie) => m.id === selectedMovies[0]) as Movie}
                     onEditMovie={onEditSubmited} />
             default:
                 return <></>
@@ -185,8 +186,8 @@ const MoviePage: FC = () => {
         }
     }
 
-    const onEditSubmited = async (updatedMovie: Movie) => {
-        const movieId = updatedMovie.id;
+    const onEditSubmited = async (updatedMovie: MovieUpdate) => {
+        const movieId = selectedMovies[0];
 
         try {
             const response = await fetch(`http://localhost:8080/api/movie/${movieId}`, {
@@ -219,7 +220,7 @@ const MoviePage: FC = () => {
         }
     }
 
-    const onCreateSubmited = async (movie: Movie) => {
+    const onCreateSubmited = async (movie: MovieCreation) => {
         try {
             const response = await fetch(`http://localhost:8080/api/movie`, {
                 method: 'POST',

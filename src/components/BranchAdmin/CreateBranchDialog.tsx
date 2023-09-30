@@ -2,12 +2,13 @@ import Backdrop from '@mui/material/Backdrop';
 import Button from '@mui/material/Button';
 import { ChangeEvent, FC, useState } from 'react';
 import { DialogActions, DialogContent, DialogContentText, DialogTitle, TextField } from '@mui/material';
-import Branch from '../../interfaces/Branch';
+import Branch from '../../interfaces/Branch/Branch';
+import BranchCreation from '../../interfaces/Branch/BranchCreation';
 
 interface Props {
     handleClose: () => void;
     title: string;
-    onCreateBranch: (branch: Branch) => void;
+    onCreateBranch: (branch: BranchCreation) => void;
 }
 
 const CreateBranchDialog: FC<Props> = (props) => {
@@ -18,8 +19,7 @@ const CreateBranchDialog: FC<Props> = (props) => {
     const [contactInfo, setContactInfo] = useState<string>('');
 
     const onSubmit = async () => {
-        const branch: Branch = {
-            id: 0,
+        const branch: BranchCreation = {
             name,
             city,
             address,
@@ -52,7 +52,7 @@ const CreateBranchDialog: FC<Props> = (props) => {
             <DialogContent >
                 <TextField
                     autoFocus
-                    margin="dense"
+                    margin="normal"
                     id="name"
                     label="שם הסניף"
                     fullWidth
@@ -62,7 +62,7 @@ const CreateBranchDialog: FC<Props> = (props) => {
                 />
                 <TextField
                     autoFocus
-                    margin="dense"
+                    margin="normal"
                     id="city"
                     label="עיר"
                     fullWidth
@@ -72,7 +72,7 @@ const CreateBranchDialog: FC<Props> = (props) => {
                 />
                 <TextField
                     autoFocus
-                    margin="dense"
+                    margin="normal"
                     id="contactInfo"
                     label="איש קשר"
                     fullWidth
@@ -82,7 +82,7 @@ const CreateBranchDialog: FC<Props> = (props) => {
                 />
                 <TextField
                     autoFocus
-                    margin="dense"
+                    margin="normal"
                     id="address"
                     label="כתובת"
                     fullWidth

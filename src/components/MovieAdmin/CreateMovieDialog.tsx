@@ -4,18 +4,19 @@ import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { ChangeEvent, FC, useState } from 'react';
 import { Box, DialogActions, DialogContent, DialogTitle, SelectChangeEvent, TextField } from '@mui/material';
-import Movie from '../../interfaces/Movie';
+import Movie from '../../interfaces/Movie/Movie';
 import NumericInputField from '../GenericComponents/NumericInputField';
 import { GenreValues, genresMap, getGenreKeyByValue } from '../../interfaces/Genre';
 import Dropdown from '../GenericComponents/Dropdown';
 import { LanguageKeys, getLanguageKeyByValue, languageMap } from '../../interfaces/Language';
 import ImageUploader from './ThumbnailUploader';
 import ThumbnailUploader from './ThumbnailUploader';
+import MovieCreation from '../../interfaces/Movie/MovieCreation';
 
 interface Props {
     handleClose: () => void;
     dialogTitle: string;
-    onCreateMovie: (movie: Movie) => void;
+    onCreateMovie: (movie: MovieCreation) => void;
 }
 
 const CreateMovieDialog: FC<Props> = (props) => {
@@ -31,8 +32,7 @@ const CreateMovieDialog: FC<Props> = (props) => {
     const [minAge, setMinAge] = useState<number>(0);
 
     const onSubmit = async () => {
-        const movie: Movie = {
-            id: 0,
+        const movie: MovieCreation = {
             title,
             description,
             duration,

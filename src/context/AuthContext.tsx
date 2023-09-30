@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useState, ReactNode, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import notify from '../utils/ErrorToast';
-import User from '../interfaces/User';
+import User from '../interfaces/User/User';
 
 // interface User {
 //     id: number;

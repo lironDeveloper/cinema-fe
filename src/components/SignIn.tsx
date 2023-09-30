@@ -14,11 +14,15 @@ import Container from '@mui/material/Container';
 import { useAuth } from '../context/AuthContext';
 import { FC, useState, ChangeEvent, FormEvent, useEffect } from 'react';
 import notify from '../utils/ErrorToast';
+import UserCreation from '../interfaces/User/UserCreation';
+import UserLogin from '../interfaces/User/UserLogin';
 
 
 const SignIn: FC = () => {
     const [email, setEmail] = useState<string>('');
     const [password, setPassword] = useState<string>('');
+
+    const { login } = useAuth();
 
     useEffect(() => {
         window.localStorage.removeItem('token')
@@ -38,19 +42,19 @@ const SignIn: FC = () => {
         setPassword(event.target.value);
     };
 
-    const { login } = useAuth();
     const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault();
+        const user: UserLogin = {
+            email,
+            password
+        };
         try {
             const response = await fetch('http://localhost:8080/api/auth/authenticate', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({
-                    email,
-                    password
-                }),
+                body: JSON.stringify(user),
             });
 
             if (response.ok) {

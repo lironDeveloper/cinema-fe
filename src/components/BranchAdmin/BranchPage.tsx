@@ -5,7 +5,7 @@ import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
 
 import Table from '../GenericComponents/Table';
-import Branch from '../../interfaces/Branch';
+import Branch from '../../interfaces/Branch/Branch';
 import HeadCell from '../../interfaces/HeadCell';
 import ActionType from '../../interfaces/ActionType';
 import CreateBranchDialog from './CreateBranchDialog';
@@ -14,7 +14,8 @@ import Modal from '../../utils/Modal';
 import notify from '../../utils/ErrorToast';
 import Adminable from '../../interfaces/Adminable';
 import TableRowDisplay from '../../interfaces/TableRowDisplay';
-import BranchRow from '../../interfaces/BranchRow';
+import BranchRow from '../../interfaces/Branch/BranchRow';
+import BranchCreation from '../../interfaces/Branch/BranchCreation';
 
 const headCells: HeadCell<Branch>[] = [
     {
@@ -86,7 +87,7 @@ const BranchPage: FC = () => {
         setOpenModal(!openModal);
     }
 
-    const onCreateBranch = async (branch: Branch) => {
+    const onCreateBranch = async (branch: BranchCreation) => {
         try {
             const response = await fetch(`http://localhost:8080/api/branch`, {
                 method: 'POST',

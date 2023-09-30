@@ -2,12 +2,13 @@ import Backdrop from '@mui/material/Backdrop';
 import Button from '@mui/material/Button';
 import { ChangeEvent, FC, useState } from 'react';
 import { DialogActions, DialogContent, DialogContentText, DialogTitle, Slider, TextField, Typography } from '@mui/material';
-import Hall from '../../interfaces/Hall';
+import Hall from '../../interfaces/Hall/Hall';
+import HallUpdate from '../../interfaces/Hall/HallUpdate';
 
 interface Props {
     handleClose: () => void;
     title: string;
-    onEditHall: (hall: Hall) => void;
+    onEditHall: (hall: HallUpdate) => void;
     hall: Hall;
 }
 
@@ -19,8 +20,7 @@ const EditHallDialog: FC<Props> = (props) => {
     const [numOfColumns, setNumOfColumns] = useState<number>(hall.numOfColumns);
 
     const onSubmit = async () => {
-        const updatedHall: Hall = {
-            ...hall,
+        const updatedHall: HallUpdate = {
             name,
             numOfRows,
             numOfColumns,
@@ -46,11 +46,11 @@ const EditHallDialog: FC<Props> = (props) => {
             <DialogContent >
                 <TextField
                     autoFocus
-                    margin="dense"
+                    margin="normal"
                     id="name"
                     label="שם האולם"
                     fullWidth
-                    variant="filled"
+                    variant="outlined"
                     value={name}
                     onChange={onNameChanged}
                 />

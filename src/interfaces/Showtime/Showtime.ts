@@ -1,5 +1,5 @@
-import Hall from "./Hall";
-import Movie from "./Movie";
+import Hall from "../Hall/Hall";
+import Movie from "../Movie/Movie";
 
 export default interface Showtime {
     id: number;

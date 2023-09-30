@@ -1,5 +1,5 @@
-import { GenreKeys } from "./Genre";
-import { LanguageKeys } from "./Language";
+import { GenreKeys } from "../Genre";
+import { LanguageKeys } from "../Language";
 
 export default interface Movie {
     id: number;

@@ -7,8 +7,8 @@ import Table from '../GenericComponents/Table';
 import HeadCell from '../../interfaces/HeadCell';
 import notify from '../../utils/ErrorToast';
 import TableRowDisplay from '../../interfaces/TableRowDisplay';
-import User from '../../interfaces/User';
-import UserRow from '../../interfaces/UserRow';
+import User from '../../interfaces/User/User';
+import UserRow from '../../interfaces/User/UserRow';
 import { FormControlLabel, FormGroup, Switch } from '@mui/material';
 import { Role } from '../../interfaces/Role';
 

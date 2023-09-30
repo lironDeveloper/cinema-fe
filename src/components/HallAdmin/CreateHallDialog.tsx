@@ -2,13 +2,14 @@ import Backdrop from '@mui/material/Backdrop';
 import Button from '@mui/material/Button';
 import { ChangeEvent, FC, useState } from 'react';
 import { DialogActions, DialogContent, DialogContentText, DialogTitle, Slider, TextField, Typography } from '@mui/material';
-import Hall from '../../interfaces/Hall';
+import Hall from '../../interfaces/Hall/Hall';
+import HallCreation from '../../interfaces/Hall/HallCreation';
 
 interface Props {
     handleClose: () => void;
     title: string;
-    onCreateHall: (hall: Hall) => void;
-    branchId: number | undefined;
+    onCreateHall: (hall: HallCreation) => void;
+    branchId: number;
 }
 
 const MIN_NUM_OF_ROWS_AND_COLS = 2;
@@ -21,12 +22,11 @@ const CreateHallDialog: FC<Props> = (props) => {
     const [numOfColumns, setNumOfColumns] = useState<number>(MIN_NUM_OF_ROWS_AND_COLS);
 
     const onSubmit = async () => {
-        const hall: Hall = {
-            id: 0,
+        const hall: HallCreation = {
+            branchId,
             name,
             numOfRows,
             numOfColumns,
-            branchId,
         };
 
         await onCreateHall(hall);
@@ -50,11 +50,11 @@ const CreateHallDialog: FC<Props> = (props) => {
             <DialogContent >
                 <TextField
                     autoFocus
-                    margin="dense"
+                    margin="normal"
                     id="name"
                     label="שם האולם"
                     fullWidth
-                    variant="filled"
+                    variant="outlined"
                     value={name}
                     onChange={onNameChanged}
                 />

@@ -1,6 +1,6 @@
 import { ReactNode } from "react";
-import { GenreValues } from "./Genre";
-import { LanguageValues } from "./Language";
+import { GenreValues } from "../Genre";
+import { LanguageValues } from "../Language";
 
 export default interface MovieRow {
     id: number;

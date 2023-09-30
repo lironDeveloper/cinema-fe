@@ -1,19 +1,17 @@
-import * as React from 'react';
+import { FC, useState, ChangeEvent, FormEvent } from 'react';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Checkbox from '@mui/material/Checkbox';
 import Link from '@mui/material/Link';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
-import { FC, useState, ChangeEvent, FormEvent, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import notify from '../utils/ErrorToast';
+import UserCreation from '../interfaces/User/UserCreation';
 
 
 const SignUp: FC = () => {
@@ -42,18 +40,20 @@ const SignUp: FC = () => {
 
     const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault();
+        const user: UserCreation = {
+            email,
+            firstName,
+            lastName,
+            password,
+        };
+
         try {
             const response = await fetch('http://localhost:8080/api/auth/signup', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({
-                    email,
-                    firstName,
-                    lastName,
-                    password,
-                }),
+                body: JSON.stringify(user),
             });
 
             let data = await response.json()
@@ -67,12 +67,6 @@ const SignUp: FC = () => {
             notify(error.message);
         }
     };
-
-    const isValidEmail = (email: string) => {
-        const emailPattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
-        return emailPattern.test(email);
-    }
-
 
     return (
         <Container component="main" maxWidth="xs">
@@ -128,7 +122,6 @@ const SignUp: FC = () => {
                                 autoComplete="email"
                                 value={email}
                                 onChange={onEmailChanged}
-                            // error={!isValidEmail(email)} 
                             />
                         </Grid>
                         <Grid item xs={12}>
