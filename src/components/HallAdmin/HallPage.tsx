@@ -50,7 +50,6 @@ const HallPage: FC = () => {
     const [modalTitle, setModalTitle] = useState('');
     const [action, setAction] = useState<ActionType>("ADD");
     const [selectedHalls, setSelectedHalls] = useState<number[]>([]);
-    const [triggerUnselect, setTriggerUnselect] = useState<boolean>(true);
 
     const { token } = useAuth();
 
@@ -200,7 +199,6 @@ const HallPage: FC = () => {
             });
             setHalls(halls.filter(h => !selectedHalls.includes(h.id)))
             setSelectedHalls([])
-            setTriggerUnselect(!triggerUnselect);
             changeModalState();
         } catch (error: any) {
             notify(error.message);
@@ -272,7 +270,6 @@ const HallPage: FC = () => {
                 onAdd={onAddHall}
                 onDelete={onDeleteHall}
                 onEdit={onEditHall}
-                triggerUnselect={triggerUnselect}
             />
             <Modal isOpen={openModal} handleClose={changeModalState}>
                 {renderModal()}

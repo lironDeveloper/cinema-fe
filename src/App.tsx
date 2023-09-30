@@ -14,6 +14,7 @@ import HallPage from './components/HallAdmin/HallPage';
 import BranchPage from './components/BranchAdmin/BranchPage';
 import MoviePage from './components/MovieAdmin/MoviePage';
 import ShowtimePage from './components/ShowtimeAdmin/ShowtimePage';
+import ManageUsersPage from './components/ManageUsersPage/ManageUsersPage';
 
 function App() {
   const location = useLocation();
@@ -78,6 +79,14 @@ function App() {
                 element={
                   <ProtectedRoute>
                     <ShowtimePage />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="users"
+                element={
+                  <ProtectedRoute>
+                    <ManageUsersPage />
                   </ProtectedRoute>
                 }
               />

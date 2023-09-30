@@ -109,9 +109,9 @@ interface EnhancedTableToolbarProps {
     selected: number[];
     title: string;
     editable: boolean;
-    onAdd: (action: ActionType, title: string) => void;
+    onAdd?: (action: ActionType, title: string) => void;
     onEdit?: (action: ActionType, title: string, selectedId: number) => void;
-    onDelete: (action: ActionType, title: string, selectedIds: number[]) => void;
+    onDelete?: (action: ActionType, title: string, selectedIds: number[]) => void;
 }
 
 function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
@@ -149,11 +149,12 @@ function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
             )}
             {numSelected > 0 ? (
                 <>
-                    <Tooltip title="מחיקה">
-                        <IconButton onClick={() => onDelete("DELETE", "מחיקת ", selected)}>
-                            <DeleteIcon />
-                        </IconButton>
-                    </Tooltip>
+                    {onDelete &&
+                        <Tooltip title="מחיקה">
+                            <IconButton onClick={() => onDelete("DELETE", "מחיקת ", selected)}>
+                                <DeleteIcon />
+                            </IconButton>
+                        </Tooltip>}
                     {editable && numSelected == 1 && onEdit ? (<Tooltip title="עריכה">
                         <IconButton onClick={() => onEdit("EDIT", "עריכת ", selected[0])}>
                             <EditIcon />
@@ -161,7 +162,7 @@ function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
                     </Tooltip>) : null}
                 </>
             ) : (
-                <Tooltip title="הוספה">
+                onAdd && <Tooltip title="הוספה">
                     <IconButton onClick={() => { onAdd("ADD", "הוספת ") }}>
                         <AddIcon />
                     </IconButton>
@@ -176,14 +177,13 @@ interface TableProps {
     title: string;
     rows: TableRowDisplay[];
     headCells: HeadCell<TableRowDisplay>[];
-    onAdd: (action: ActionType, title: string) => void;
+    onAdd?: (action: ActionType, title: string) => void;
     onEdit?: (action: ActionType, title: string, selectedId: number) => void;
-    onDelete: (action: ActionType, title: string, selectedIds: number[]) => void;
-    triggerUnselect: boolean;
+    onDelete?: (action: ActionType, title: string, selectedIds: number[]) => void;
 }
 
 const TableCinema: FC<TableProps> = (props) => {
-    const { editable, title, rows, headCells, onAdd, onEdit, onDelete, triggerUnselect } = props;
+    const { editable, title, rows, headCells, onAdd, onEdit, onDelete } = props;
     const [order, setOrder] = useState<Order>('asc');
     const [orderBy, setOrderBy] = useState<keyof TableRowDisplay>('id');
     const [selected, setSelected] = useState<number[]>([]);
@@ -192,7 +192,7 @@ const TableCinema: FC<TableProps> = (props) => {
 
     useEffect(() => {
         setSelected([]);
-    }, [triggerUnselect])
+    }, [rows])
 
     const handleRequestSort = (
         event: MouseEvent<unknown>,

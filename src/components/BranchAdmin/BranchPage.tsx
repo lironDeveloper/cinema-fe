@@ -42,7 +42,6 @@ const BranchPage: FC = () => {
     const [modalTitle, setModalTitle] = useState('');
     const [action, setAction] = useState<ActionType>("ADD");
     const [selectedBranches, setSelectedBranches] = useState<number[]>([]);
-    const [triggerUnselect, setTriggerUnselect] = useState<boolean>(true);
 
     const { token } = useAuth();
 
@@ -131,7 +130,6 @@ const BranchPage: FC = () => {
             });
             setBranches(branches.filter(b => !selectedBranches.includes(b.id)))
             setSelectedBranches([]);
-            setTriggerUnselect(!triggerUnselect);
             changeModalState();
         } catch (error: any) {
             notify(error.message);
@@ -174,7 +172,6 @@ const BranchPage: FC = () => {
                 headCells={headCells as HeadCell<TableRowDisplay>[]}
                 onAdd={onAddBranch}
                 onDelete={onDeleteBranch}
-                triggerUnselect={triggerUnselect}
             />
             <Modal isOpen={openModal} handleClose={changeModalState}>
                 {renderModal()}

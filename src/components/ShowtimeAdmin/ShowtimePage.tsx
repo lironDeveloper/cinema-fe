@@ -63,7 +63,6 @@ const ShowtimePage: FC = () => {
     const [modalTitle, setModalTitle] = useState('');
     const [action, setAction] = useState<ActionType>("ADD");
     const [selectedShowtimes, setSelectedShowtimes] = useState<number[]>([]);
-    const [triggerUnselect, setTriggerUnselect] = useState<boolean>(true);
 
     const { token } = useAuth();
 
@@ -245,7 +244,6 @@ const ShowtimePage: FC = () => {
             });
             setShowtimes(showtimes.filter(st => !selectedShowtimes.includes(st.id)))
             setSelectedShowtimes([])
-            setTriggerUnselect(!triggerUnselect);
             changeModalState();
         } catch (error: any) {
             notify(error.message);
@@ -337,7 +335,6 @@ const ShowtimePage: FC = () => {
                 onAdd={onAddShowtime}
                 onEdit={onEditShowtime}
                 onDelete={onDeleteShowtime}
-                triggerUnselect={triggerUnselect}
             />
             <Modal isOpen={openModal} handleClose={changeModalState}>
                 {renderModal()}

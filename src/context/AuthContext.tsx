@@ -1,14 +1,15 @@
 import React, { createContext, useContext, useState, ReactNode, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import notify from '../utils/ErrorToast';
+import User from '../interfaces/User';
 
-interface User {
-    id: number;
-    fullName: string;
-    email: string;
-    role: string;
-    createdOn: string;
-}
+// interface User {
+//     id: number;
+//     fullName: string;
+//     email: string;
+//     role: string;
+//     createdOn: string;
+// }
 
 interface AuthContextProps {
     user: User | null;

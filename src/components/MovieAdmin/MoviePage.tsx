@@ -72,7 +72,6 @@ const MoviePage: FC = () => {
     const [modalTitle, setModalTitle] = useState('');
     const [action, setAction] = useState<ActionType>("ADD");
     const [selectedMovies, setSelectedMovies] = useState<number[]>([]);
-    const [triggerUnselect, setTriggerUnselect] = useState<boolean>(true);
 
     const { token } = useAuth();
 
@@ -180,7 +179,6 @@ const MoviePage: FC = () => {
             });
             setMovies(movies.filter(m => !selectedMovies.includes(m.id)))
             setSelectedMovies([]);
-            setTriggerUnselect(!triggerUnselect);
             changeModalState();
         } catch (error: any) {
             notify(error.message);
@@ -257,7 +255,6 @@ const MoviePage: FC = () => {
                 onAdd={onAddMovie}
                 onEdit={onEditMovie}
                 onDelete={onDeleteMovie}
-                triggerUnselect={triggerUnselect}
             />
             <Modal isOpen={openModal} handleClose={changeModalState}>
                 {renderModal()}

@@ -2,21 +2,12 @@ import { MouseEvent, useState, FC, ChangeEvent, } from 'react';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
-import IconButton from '@mui/material/IconButton';
-import Typography from '@mui/material/Typography';
-import Menu from '@mui/material/Menu';
-import MenuIcon from '@mui/icons-material/Menu';
-import Container from '@mui/material/Container';
-import Avatar from '@mui/material/Avatar';
-import Button from '@mui/material/Button';
-import Tooltip from '@mui/material/Tooltip';
-import MenuItem from '@mui/material/MenuItem';
-import AdbIcon from '@mui/icons-material/Adb';
+import HomeIcon from '@mui/icons-material/Home';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { styled, alpha } from '@mui/material/styles';
 import InputBase from '@mui/material/InputBase';
-import SearchIcon from '@mui/icons-material/Search';
+import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import Drawer from '@mui/material/Drawer';
 import List from '@mui/material/List';
@@ -40,7 +31,7 @@ interface ListItem {
 }
 
 const Sidebar: FC = () => {
-    const [selectedKey, setSelectedKey] = useState<string>(''); // TOdo - infer from the uri
+    const [selectedKey, setSelectedKey] = useState<string>(window.location.pathname);
     const navigate = useNavigate();
     const { user } = useAuth();
 
@@ -53,8 +44,8 @@ const Sidebar: FC = () => {
     const listItems = (obj: ListItem) => (
         <ListItem key={obj.key} disablePadding onClick={() => { navigate(obj.link); }}>
             <ListItemButton
-                selected={selectedKey === obj.key}
-                onClick={(event) => handleListItemClick(obj.key)}
+                selected={selectedKey === obj.link}
+                onClick={(event) => handleListItemClick(obj.link)}
             >
                 <ListItemIcon>
                     {obj.icon}
@@ -78,7 +69,8 @@ const Sidebar: FC = () => {
             <Box sx={{ overflow: 'auto' }}>
                 <List>
                     {[
-                        { key: "but-ticket", text: "הזמנת כרטיס", icon: <ConfirmationNumberIcon />, link: "/buy-ticket" },
+                        { key: "home", text: "דף הבית", icon: <HomeIcon />, link: "/" },
+                        { key: "buy-ticket", text: "הזמנת כרטיס", icon: <ConfirmationNumberIcon />, link: "/buy-ticket" },
                     ].map((obj) => listItems(obj))}
                 </List>
                 {user?.role == 'ROLE_ADMIN' ? (
@@ -90,6 +82,8 @@ const Sidebar: FC = () => {
                                 { key: "hall-mgmt", text: "ניהול אולמות", icon: <EventSeatIcon />, link: "/admin/hall" },
                                 { key: "movie-mgmt", text: "ניהול סרטים", icon: <SlideshowIcon />, link: "/admin/movie" },
                                 { key: "showtime-mgmt", text: "ניהול הקרנות", icon: <AccessTimeIcon />, link: "/admin/showtime" },
+                                { key: "change-role", text: "ניהול משתמשים", icon: <AdminPanelSettingsIcon />, link: "/admin/users" },
+
                             ].map((obj) => listItems(obj))
                             }
                         </List>
