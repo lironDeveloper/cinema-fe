@@ -4,6 +4,7 @@ import { ChangeEvent, FC, useState } from 'react';
 import { DialogActions, DialogContent, DialogContentText, DialogTitle, Slider, TextField, Typography } from '@mui/material';
 import Hall from '../../interfaces/Hall/Hall';
 import HallUpdate from '../../interfaces/Hall/HallUpdate';
+import hebrewPattern from '../../Regex/HebewOnly';
 
 interface Props {
     handleClose: () => void;
@@ -30,7 +31,8 @@ const EditHallDialog: FC<Props> = (props) => {
     }
 
     const onNameChanged = (event: ChangeEvent<HTMLInputElement>) => {
-        setName(event.target.value);
+        if (hebrewPattern.test(event.target.value))
+            setName(event.target.value);
     };
 
     const onNumOfRowsChanged = (event: Event, newValue: number | number[]) => {

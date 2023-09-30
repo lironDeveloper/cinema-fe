@@ -4,6 +4,8 @@ import { ChangeEvent, FC, useState } from 'react';
 import { DialogActions, DialogContent, DialogContentText, DialogTitle, TextField } from '@mui/material';
 import Branch from '../../interfaces/Branch/Branch';
 import BranchCreation from '../../interfaces/Branch/BranchCreation';
+import hebrewPattern from '../../Regex/HebewOnly';
+import hebrewNumbersPattern from '../../Regex/HebrewAndNumbers';
 
 interface Props {
     handleClose: () => void;
@@ -30,19 +32,23 @@ const CreateBranchDialog: FC<Props> = (props) => {
     }
 
     const onNameChanged = (event: ChangeEvent<HTMLInputElement>) => {
-        setName(event.target.value);
+        if (hebrewPattern.test(event.target.value))
+            setName(event.target.value);
     };
 
     const onCityChanged = (event: ChangeEvent<HTMLInputElement>) => {
-        setCity(event.target.value);
+        if (hebrewPattern.test(event.target.value))
+            setCity(event.target.value);
     };
 
     const onContactInfoChanged = (event: ChangeEvent<HTMLInputElement>) => {
-        setContactInfo(event.target.value);
+        if (hebrewPattern.test(event.target.value))
+            setContactInfo(event.target.value);
     };
 
     const onAddressChanged = (event: ChangeEvent<HTMLInputElement>) => {
-        setAddress(event.target.value);
+        if (hebrewNumbersPattern.test(event.target.value))
+            setAddress(event.target.value);
     };
 
 

@@ -12,6 +12,7 @@ import { LanguageKeys, getLanguageKeyByValue, languageMap } from '../../interfac
 import ImageUploader from './ThumbnailUploader';
 import ThumbnailUploader from './ThumbnailUploader';
 import MovieCreation from '../../interfaces/Movie/MovieCreation';
+import hebrewPattern from '../../Regex/HebewOnly';
 
 interface Props {
     handleClose: () => void;
@@ -69,7 +70,8 @@ const CreateMovieDialog: FC<Props> = (props) => {
     };
 
     const onDirectorChanged = (event: ChangeEvent<HTMLInputElement>) => {
-        setDirector(event.target.value);
+        if (hebrewPattern.test(event.target.value))
+            setDirector(event.target.value);
     };
 
     const onLangugageChanged = (event: SelectChangeEvent) => {
