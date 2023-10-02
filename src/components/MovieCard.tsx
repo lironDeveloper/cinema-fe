@@ -18,33 +18,6 @@ type MovieCardProps = {
     thumnailURL: string
 }
 
-const stringAvatar = (name: string) => {
-    return {
-        sx: {
-            bgcolor: stringToColor(name),
-        },
-        children: `${name.split(' ')[0][0]}${name.split(' ')[1][0]}`,
-    };
-}
-
-const stringToColor = (string: string) => {
-    let hash = 0;
-    let i;
-
-    for (i = 0; i < string.length; i += 1) {
-        hash = string.charCodeAt(i) + ((hash << 5) - hash);
-    }
-
-    let color = '#';
-
-    for (i = 0; i < 3; i += 1) {
-        const value = (hash >> (i * 8)) & 0xff;
-        color += `00${value.toString(16)}`.slice(-2);
-    }
-
-    return color;
-}
-
 const MovieCard: FC<MovieCardProps> = (props) => {
     const { movie, thumnailURL } = props;
     const [imageUrl, setImageUrl] = useState<string>('');
@@ -77,29 +50,15 @@ const MovieCard: FC<MovieCardProps> = (props) => {
     };
 
     return (
-        <Card sx={{ maxWidth: 220 }} >
-            {/* <CardHeader
-                avatar={
-                    <Avatar {...stringAvatar(movie.director)} />
-                }
-                title={movie.director}
-                subheader={dayjs(movie.releaseDate).locale('he').format('YYYY ,MMMM').toString()}
-                sx={{ direction: 'ltr' }}
-            /> */}
+        <Card sx={{ maxWidth: 180 }} >
+
             <CardMedia
                 component="img"
-                // sx={{ paddingTop: '150%' }}
+                sx={{ height: 180 * 889 / 600 }}
                 image={imageUrl}
             />
-            <CardContent sx={{ padding: '5px 16px 5px 16px' }}>
-                {/* <Typography
-                    gutterBottom
-                    variant="h5"
-                    component="div"
-                    sx={{ overflow: 'hidden', display: '-webkit-box', '-webkit-line-clamp': '2', '-webkit-box-orient': 'vertical', textOverflow: 'ellipsis', }}>
-                    {movie.title}
-                </Typography> */}
-                <Typography variant="body2" color="text.secondary" sx={{ overflow: 'hidden', display: '-webkit-box', '-webkit-line-clamp': '2', '-webkit-box-orient': 'vertical', textOverflow: 'ellipsis', }}>
+            <CardContent sx={{ padding: '5px 8px 5px 8px !important' }}>
+                <Typography variant="body2" color="text.secondary" sx={{ overflow: 'hidden', display: '-webkit-box', '-webkit-line-clamp': '1', '-webkit-box-orient': 'vertical', textOverflow: 'ellipsis', }}>
                     {movie.title}
                 </Typography>
             </CardContent>

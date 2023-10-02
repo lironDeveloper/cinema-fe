@@ -27,12 +27,13 @@ import { genresMap } from '../../interfaces/Genre';
 import { languageMap } from '../../interfaces/Language';
 import MovieUpdate from '../../interfaces/Movie/MovieUpdate';
 import MovieCreation from '../../interfaces/Movie/MovieCreation';
+import Avatar from '@mui/material/Avatar';
 
 const headCells: HeadCell<MovieRow>[] = [
-    // {
-    //     id: 'thumbnail',
-    //     label: 'תמונת נושא',
-    // },
+    {
+        id: 'thumbnail',
+        label: 'תמונת נושא',
+    },
     {
         id: 'title',
         label: 'שם הסרט',
@@ -69,6 +70,7 @@ const headCells: HeadCell<MovieRow>[] = [
 
 const MoviePage: FC = () => {
     const [movies, setMovies] = useState<Movie[]>([]);
+    const [movieIdToThumbnail, setMovieIdToThumbnail] = useState<Map<number, string>>(new Map<number, string>());
     const [rows, setRows] = useState<MovieRow[]>([]);
     const [openModal, setOpenModal] = useState(false);
     const [modalTitle, setModalTitle] = useState('');
@@ -79,11 +81,22 @@ const MoviePage: FC = () => {
 
     useEffect(() => {
         fetchMovies();
+
+        // Clean up
+        return () => {
+            for (const thumbnail of movieIdToThumbnail.values()) {
+                URL.revokeObjectURL(thumbnail);
+            }
+        };
     }, []);
 
     useEffect(() => {
-        parseRows();
+        fetchMoviesThumbnails();
     }, [movies]);
+
+    useEffect(() => {
+        parseRows();
+    }, [movieIdToThumbnail]);
 
     const fetchMovies = async () => {
         try {
@@ -105,6 +118,31 @@ const MoviePage: FC = () => {
         }
     };
 
+    const fetchMoviesThumbnails = async () => {
+        const updatedMap: Map<number, string> = new Map(movieIdToThumbnail);
+
+        try {
+            await Promise.all(movies.map(async (movie: Movie) => {
+                const response = await fetch(`http://localhost:8080/api/movie/thumbnail/${movie.id}`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    },
+                    credentials: 'include'
+                });
+
+                if (response.ok) {
+                    const thumbnail = await response.blob();
+                    updatedMap.set(movie.id, URL.createObjectURL(thumbnail));
+                } else {
+                    updatedMap.set(movie.id, '');
+                }
+            }));
+            setMovieIdToThumbnail(updatedMap);
+        } catch (error: any) {
+            notify(error.message);
+        }
+    };
+
     const parseRows = () => {
         setRows(movies.map((m: Movie) => {
             return {
@@ -113,9 +151,9 @@ const MoviePage: FC = () => {
                 releaseDate: dayjs(m.releaseDate).format('DD/MM/YYYY').toString(),
                 genre: genresMap.get(m.genre),
                 language: languageMap.get(m.language),
-                // thumbnail: (
-                //     <img src={""} />
-                // )
+                thumbnail: (
+                    <Avatar variant="rounded" src={`${movieIdToThumbnail.get(m.id)}`} sx={{ width: 55, height: 55 * 889 / 600 }} />
+                )
             }
         }));
     }

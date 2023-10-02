@@ -12,5 +12,5 @@ export default interface MovieRow {
     director: string;
     language: LanguageValues | undefined;
     minAge: number;
-    // thumbnail: ReactNode;
+    thumbnail: ReactNode;
 }
