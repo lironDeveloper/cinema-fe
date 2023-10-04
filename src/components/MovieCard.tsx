@@ -26,6 +26,9 @@ const MovieCard: FC<MovieCardProps> = (props) => {
 
     useEffect(() => {
         fetchMovieThumbnail();
+
+        // Clean up
+        return () => URL.revokeObjectURL(imageUrl);
     }, []);
 
     const fetchMovieThumbnail = async () => {

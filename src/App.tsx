@@ -17,6 +17,7 @@ import ShowtimePage from './components/ShowtimeAdmin/ShowtimePage';
 import ManageUsersPage from './components/ManageUsersPage/ManageUsersPage';
 import { styled } from '@mui/material';
 import SearchPage from './components/SearchPage';
+import OrderPage from './components/OrderTickets/OrderPage';
 
 const SideBarController = styled('div')(({ theme }) => ({
 
@@ -127,7 +128,7 @@ function App() {
               path="/buy-ticket"
               element={
                 <ProtectedRoute>
-                  <div>buy ticket page</div>
+                  <OrderPage />
                 </ProtectedRoute>
               }
             />
