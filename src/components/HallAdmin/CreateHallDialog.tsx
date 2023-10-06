@@ -65,11 +65,11 @@ const CreateHallDialog: FC<Props> = (props) => {
                 </Typography>
                 <Slider
                     size="small"
-                    defaultValue={25}
+                    defaultValue={7}
                     aria-label="Small"
                     valueLabelDisplay="on"
                     min={MIN_NUM_OF_ROWS_AND_COLS}
-                    max={150}
+                    max={15}
                     value={numOfRows}
                     onChange={onNumOfRowsChanged}
                 />
@@ -78,11 +78,11 @@ const CreateHallDialog: FC<Props> = (props) => {
                 </Typography>
                 <Slider
                     size="small"
-                    defaultValue={25}
+                    defaultValue={7}
                     aria-label="Small"
                     valueLabelDisplay="on"
                     min={MIN_NUM_OF_ROWS_AND_COLS}
-                    max={150}
+                    max={15}
                     value={numOfColumns}
                     onChange={onNumOfColumnsChanged}
                 />

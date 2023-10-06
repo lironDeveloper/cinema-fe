@@ -5,7 +5,7 @@ import SignIn from './components/SignIn';
 import SignUp from './components/SignUp';
 import Home from './components/Home';
 import Header from './components/Header';
-import MovieInfo from './components/MovieInfo';
+import MovieInfo from './components/MovieInfo/MovieInfo';
 import NoMatch from './components/NoMatch';
 import Sidebar from './components/Sidebar';
 import Box from '@mui/material/Box';

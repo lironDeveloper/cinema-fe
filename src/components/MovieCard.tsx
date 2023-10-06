@@ -9,17 +9,14 @@ import { FC, useEffect, useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import notify from '../utils/ErrorToast';
 import Movie from '../interfaces/Movie/Movie';
-import { Avatar, CardHeader } from '@mui/material';
-import dayjs from 'dayjs';
-import 'dayjs/locale/he';
 
 type MovieCardProps = {
-    movie: Movie,
-    thumnailURL: string
+    movie: Movie
+    width?: number;
 }
 
 const MovieCard: FC<MovieCardProps> = (props) => {
-    const { movie, thumnailURL } = props;
+    const { movie } = props;
     const [imageUrl, setImageUrl] = useState<string>('');
 
     const { token } = useAuth();
@@ -33,7 +30,7 @@ const MovieCard: FC<MovieCardProps> = (props) => {
 
     const fetchMovieThumbnail = async () => {
         try {
-            const response = await fetch(thumnailURL, {
+            const response = await fetch(`http://localhost:8080/api/movie/thumbnail/${movie.id}`, {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 },
@@ -53,18 +50,18 @@ const MovieCard: FC<MovieCardProps> = (props) => {
     };
 
     return (
-        <Card sx={{ maxWidth: 180 }} >
+        <Card sx={{ maxWidth: props.width ? props.width : 180 }} >
 
             <CardMedia
                 component="img"
-                sx={{ height: 180 * 889 / 600 }}
+                sx={{ height: props.width ? props.width : 180 * 889 / 600 }}
                 image={imageUrl}
             />
-            <CardContent sx={{ padding: '5px 8px 5px 8px !important' }}>
+            {/* <CardContent sx={{ padding: '5px 8px 5px 8px !important' }}>
                 <Typography variant="body2" color="text.secondary" sx={{ overflow: 'hidden', display: '-webkit-box', '-webkit-line-clamp': '1', '-webkit-box-orient': 'vertical', textOverflow: 'ellipsis', }}>
                     {movie.title}
                 </Typography>
-            </CardContent>
+            </CardContent> */}
         </Card>
     );
 }

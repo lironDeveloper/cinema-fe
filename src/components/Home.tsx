@@ -62,7 +62,7 @@ const Home: React.FC = () => {
                             <Typography variant='h6' fontWeight={'bold'}>{genresMap.get(genre)}</Typography >
                             <Box sx={{ display: 'flex', gap: '3vw', flexWrap: 'wrap' }}>
                                 {movies.map((movie: Movie) => (
-                                    <MovieCard movie={movie} thumnailURL={`http://localhost:8080/api/movie/thumbnail/${movie.id}`} />
+                                    <MovieCard movie={movie} />
                                 ))}
                             </Box>
                         </Box>

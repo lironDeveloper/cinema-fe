@@ -61,11 +61,11 @@ const EditHallDialog: FC<Props> = (props) => {
                 </Typography>
                 <Slider
                     size="small"
-                    defaultValue={25}
+                    defaultValue={7}
                     aria-label="Small"
                     valueLabelDisplay="on"
                     min={2}
-                    max={150}
+                    max={15}
                     value={numOfRows}
                     onChange={onNumOfRowsChanged}
                 />
@@ -78,7 +78,7 @@ const EditHallDialog: FC<Props> = (props) => {
                     aria-label="Small"
                     valueLabelDisplay="on"
                     min={2}
-                    max={150}
+                    max={15}
                     value={numOfColumns}
                     onChange={onNumOfColumnsChanged}
                 />

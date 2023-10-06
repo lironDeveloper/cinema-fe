@@ -45,7 +45,7 @@ const SearchPage: React.FC = () => {
             <Toolbar />
             <Box sx={{ display: 'flex', gap: '3vw', flexWrap: 'wrap' }}>
                 {results.map((movie: Movie) => (
-                    <MovieCard movie={movie} thumnailURL={`http://localhost:8080/api/movie/thumbnail/${movie.id}`} />
+                    <MovieCard movie={movie} />
                 ))}
             </Box>
         </Box>
