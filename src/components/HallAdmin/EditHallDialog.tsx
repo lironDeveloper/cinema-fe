@@ -1,7 +1,6 @@
-import Backdrop from '@mui/material/Backdrop';
 import Button from '@mui/material/Button';
 import { ChangeEvent, FC, useState } from 'react';
-import { DialogActions, DialogContent, DialogContentText, DialogTitle, Slider, TextField, Typography } from '@mui/material';
+import { DialogActions, DialogContent, DialogTitle, Slider, TextField, Typography } from '@mui/material';
 import Hall from '../../interfaces/Hall/Hall';
 import HallUpdate from '../../interfaces/Hall/HallUpdate';
 import hebrewPattern from '../../Regex/HebewOnly';

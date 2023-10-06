@@ -1,7 +1,6 @@
-import Backdrop from '@mui/material/Backdrop';
 import Button from '@mui/material/Button';
-import { ChangeEvent, FC, useEffect, useState } from 'react';
-import { Box, DialogActions, DialogContent, DialogContentText, DialogTitle, SelectChangeEvent, Slider, TextField, Typography } from '@mui/material';
+import { FC, useEffect, useState } from 'react';
+import { Box, DialogActions, DialogContent, DialogTitle, SelectChangeEvent, TextField } from '@mui/material';
 import Hall from '../../interfaces/Hall/Hall';
 import Showtime from '../../interfaces/Showtime/Showtime';
 import ShowtimeUpdate from '../../interfaces/Showtime/ShowtimeUpdate';
@@ -50,7 +49,7 @@ const EditShowtimeDialog: FC<Props> = (props) => {
             });
             const data = await response.json();
             if (response.ok) {
-                if (data.length == 0) {
+                if (data.length === 0) {
                     throw new Error("אין אולמות בסניף זה.")
                 }
                 const updatedMap: Map<string, number> = new Map(hallsMap);

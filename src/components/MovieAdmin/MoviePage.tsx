@@ -1,14 +1,7 @@
 import { useAuth } from '../../context/AuthContext';
 import { FC, useEffect, useState } from 'react';
-import { Theme, useTheme } from '@mui/material/styles';
-import OutlinedInput from '@mui/material/OutlinedInput';
-import InputLabel from '@mui/material/InputLabel';
-import MenuItem from '@mui/material/MenuItem';
-import FormControl from '@mui/material/FormControl';
-import Select, { SelectChangeEvent } from '@mui/material/Select';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
-
 import Table from '../GenericComponents/Table';
 import HeadCell from '../../interfaces/HeadCell';
 import Movie from '../../interfaces/Movie/Movie';
@@ -17,9 +10,7 @@ import Modal from '../../utils/Modal';
 import ActionType from '../../interfaces/ActionType';
 import DeleteMovieDialog from './DeleteMovieDialog';
 import EditMovieDialog from './EditMovieDialog';
-import Adminable from '../../interfaces/Adminable';
 import notify from '../../utils/ErrorToast';
-import moment from 'moment';
 import TableRowDisplay from '../../interfaces/TableRowDisplay';
 import MovieRow from '../../interfaces/Movie/MovieRow';
 import dayjs from 'dayjs';

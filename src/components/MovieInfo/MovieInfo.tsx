@@ -1,6 +1,4 @@
 import { FC } from 'react';
-import { useAuth } from '../../context/AuthContext';
-import styled from '@emotion/styled';
 import { useParams } from 'react-router-dom';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';

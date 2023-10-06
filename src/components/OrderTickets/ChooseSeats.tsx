@@ -1,13 +1,10 @@
-import { styled } from "@mui/material/styles";
 import { ChangeEvent, FC, useEffect, useState } from "react";
 import SeatSelector from "./SeatSelector";
 import Point from "../../interfaces/Point";
 import Showtime from "../../interfaces/Showtime/Showtime";
 import { useAuth } from "../../context/AuthContext";
 import notify from "../../utils/ErrorToast";
-import dayjs from "dayjs";
 import { Box, Typography } from "@mui/material";
-import MovieCard from "../MovieCard";
 import MovieInfoCompact from "../MovieInfo/MovieInfoCompact";
 import NumericInputField from "../GenericComponents/NumericInputField";
 import Seat from "./Seat";

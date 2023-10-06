@@ -3,16 +3,10 @@ import { useAuth } from '../context/AuthContext';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
 import MovieCard from './MovieCard';
-import { Stack, Typography, Paper } from '@mui/material'
-import Container from '@mui/material/Container';
+import { Typography } from '@mui/material'
 import notify from '../utils/ErrorToast';
 import Movie from '../interfaces/Movie/Movie';
 import { GenreKeys, genresMap } from '../interfaces/Genre';
-
-interface MovieData {
-    movies: Movie[];
-    loading: boolean;
-}
 
 const genresKeysArr: GenreKeys[] = Array.from(genresMap.keys());
 

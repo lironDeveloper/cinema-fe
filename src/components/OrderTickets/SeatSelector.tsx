@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, FC } from 'react';
+import { FC } from 'react';
 import Seat from './Seat';
 import { styled } from '@mui/material/styles';
 import Point from '../../interfaces/Point';
@@ -46,7 +46,7 @@ const SeatsContainer = styled('div')(() => ({
     flexDirection: 'column'
 }));
 
-const SeatIndexer = styled('div')(({ }) => ({
+const SeatIndexer = styled('div')(() => ({
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
@@ -63,13 +63,7 @@ const SeatRow = styled('div')(() => ({
 
 const SeatSelector: FC<SeatSelectorProps> = (props) => {
     const { cols, occupiedSeats, handleSeatSelection, rows, maxNumOfSeat, selectedSeats } = props;
-    // const [selectedSeats, setSelectedSeats] = useState<Point[]>([]);
 
-    // useEffect(() => {
-    //     onSelect(selectedSeats);
-    // }, [selectedSeats])
-
-    // Function to handle seat selection
     const handleSeatClick = (row: number, col: number) => {
         const state = calcState(row, col)
         if (state === 'OCCUPIED') {
@@ -84,7 +78,7 @@ const SeatSelector: FC<SeatSelectorProps> = (props) => {
     };
 
     const checkIfInPointList = (i: number, j: number, list: Point[]) => {
-        return list.filter(p => p.seatRowNum == i && p.seatColNum == j).length > 0
+        return list.filter(p => p.seatRowNum === i && p.seatColNum === j).length > 0
     }
 
     const calcState = (i: number, j: number): 'FREE' | 'OCCUPIED' | 'SELECTED' => {

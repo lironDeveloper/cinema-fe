@@ -1,11 +1,6 @@
 import { useAuth } from '../../context/AuthContext';
 import { FC, useEffect, useState } from 'react';
-import { Theme, useTheme } from '@mui/material/styles';
-import OutlinedInput from '@mui/material/OutlinedInput';
-import InputLabel from '@mui/material/InputLabel';
-import MenuItem from '@mui/material/MenuItem';
-import FormControl from '@mui/material/FormControl';
-import Select, { SelectChangeEvent } from '@mui/material/Select';
+import { SelectChangeEvent } from '@mui/material/Select';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
 
@@ -18,7 +13,6 @@ import Modal from '../../utils/Modal';
 import CreateHallDialog from './CreateHallDialog';
 import DeleteHallDialog from './DeleteHallDialog';
 import EditHallDialog from './EditHallDialog';
-import Adminable from '../../interfaces/Adminable';
 import notify from '../../utils/ErrorToast';
 import Dropdown from '../GenericComponents/Dropdown';
 import TableRowDisplay from '../../interfaces/TableRowDisplay';

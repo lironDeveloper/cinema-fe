@@ -1,9 +1,7 @@
-import * as React from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { FC, useEffect, useState } from 'react';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
-
 import Table from '../GenericComponents/Table';
 import Branch from '../../interfaces/Branch/Branch';
 import HeadCell from '../../interfaces/HeadCell';
@@ -12,7 +10,6 @@ import CreateBranchDialog from './CreateBranchDialog';
 import DeleteBranchDialog from './DeleteBranchDialog';
 import Modal from '../../utils/Modal';
 import notify from '../../utils/ErrorToast';
-import Adminable from '../../interfaces/Adminable';
 import TableRowDisplay from '../../interfaces/TableRowDisplay';
 import BranchRow from '../../interfaces/Branch/BranchRow';
 import BranchCreation from '../../interfaces/Branch/BranchCreation';

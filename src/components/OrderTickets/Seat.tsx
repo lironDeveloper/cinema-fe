@@ -1,6 +1,5 @@
 import { styled } from "@mui/material/styles";
 import { FC } from "react";
-import Point from "../../interfaces/Point";
 
 type State = 'FREE' | 'OCCUPIED' | 'SELECTED';
 
@@ -26,7 +25,7 @@ const MovieSeat = styled('div')<Props>(({ state }) => ({
     transition: 'opacity 0.1s ease-in-out',
     backgroundColor: colorCalc(state),
 
-    ...((state == "OCCUPIED") && {
+    ...((state === "OCCUPIED") && {
         "&:hover": {
             cursor: 'not-allowed',
             opacity: 1, // Set opacity to 1 to disable hover effect
@@ -34,7 +33,7 @@ const MovieSeat = styled('div')<Props>(({ state }) => ({
     }),
 
     // Enable hover effect when seat is free
-    ...((state == "FREE" || state == 'SELECTED') && {
+    ...((state === "FREE" || state === 'SELECTED') && {
         "&:hover": {
             cursor: 'pointer',
             opacity: 0.7,

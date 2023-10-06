@@ -1,10 +1,4 @@
-import Backdrop from '@mui/material/Backdrop';
-import Box from '@mui/material/Box';
-import Modal from '@mui/material/Modal';
-import Fade from '@mui/material/Fade';
-import Button from '@mui/material/Button';
-import Typography from '@mui/material/Typography';
-import { FC, ReactElement, useState } from 'react';
+import { FC, ReactElement } from 'react';
 import { Dialog } from '@mui/material';
 
 interface ModalProps {

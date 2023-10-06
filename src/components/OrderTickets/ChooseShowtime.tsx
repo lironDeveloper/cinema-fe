@@ -1,4 +1,3 @@
-import { styled } from "@mui/material/styles";
 import { FC, useEffect, useState } from "react";
 import Showtime from "../../interfaces/Showtime/Showtime";
 import { Box, FormControl, FormControlLabel, FormLabel, Radio, RadioGroup, SelectChangeEvent, Typography } from "@mui/material";
@@ -10,8 +9,6 @@ import { useAuth } from "../../context/AuthContext";
 import Branch from "../../interfaces/Branch/Branch";
 import notify from "../../utils/ErrorToast";
 import Movie from "../../interfaces/Movie/Movie";
-import NumericInputField from "../GenericComponents/NumericInputField";
-import MovieCard from "../MovieCard";
 import MovieInfoCompact from "../MovieInfo/MovieInfoCompact";
 
 interface Props {

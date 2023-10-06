@@ -1,20 +1,15 @@
-import { MouseEvent, useState, FC, ChangeEvent, } from 'react';
-import AppBar from '@mui/material/AppBar';
+import { useState, FC } from 'react';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
 import HomeIcon from '@mui/icons-material/Home';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
-import { styled, alpha } from '@mui/material/styles';
-import InputBase from '@mui/material/InputBase';
 import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import Drawer from '@mui/material/Drawer';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
-import InboxIcon from '@mui/icons-material/MoveToInbox';
-import MailIcon from '@mui/icons-material/Mail';
 import ListItemText from '@mui/material/ListItemText';
 import Divider from '@mui/material/Divider';
 import ConfirmationNumberIcon from '@mui/icons-material/ConfirmationNumber';
@@ -73,7 +68,7 @@ const Sidebar: FC = () => {
                         { key: "buy-ticket", text: "הזמנת כרטיס", icon: <ConfirmationNumberIcon />, link: "/buy-ticket" },
                     ].map((obj) => listItems(obj))}
                 </List>
-                {user?.role == 'ROLE_ADMIN' ? (
+                {user?.role === 'ROLE_ADMIN' ? (
                     <>
                         <Divider />
                         <List>

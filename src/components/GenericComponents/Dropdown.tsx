@@ -1,6 +1,5 @@
-import React, { ChangeEvent, FC } from 'react';
-import TextField from '@mui/material/TextField';
-import { Box, FormControl, InputLabel, MenuItem, Select, SelectChangeEvent } from '@mui/material';
+import { FC } from 'react';
+import { FormControl, InputLabel, MenuItem, Select, SelectChangeEvent } from '@mui/material';
 
 interface Props {
     value: string | undefined;

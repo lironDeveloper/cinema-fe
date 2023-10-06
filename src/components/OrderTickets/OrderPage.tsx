@@ -1,7 +1,6 @@
-import React, { FC, useEffect, useState } from 'react';
-import { Stepper, Step, StepLabel, StepConnector, Box, Toolbar, Button, styled, stepConnectorClasses, StepIconProps } from '@mui/material';
-import SeatSelector from './SeatSelector';
-import Point from '../../interfaces/Point';
+import { FC, useEffect, useState } from 'react';
+import { Stepper, Step, StepLabel, Box, Toolbar, Button, styled, StepIconProps } from '@mui/material';
+import Point from '../../interfaces/Point'
 import { Check } from '@mui/icons-material';
 import ChooseShowtime from './ChooseShowtime';
 import ChooseSeats from './ChooseSeats';
@@ -160,7 +159,7 @@ const OrderPage: FC = () => {
                             variant="contained"
                             color="primary"
                             onClick={handleNext}
-                            disabled={(activeStep == 0 && !selectedShowtime) || (activeStep == 1 && selectedSeats.length == 0)}
+                            disabled={(activeStep === 0 && !selectedShowtime) || (activeStep === 1 && selectedSeats.length === 0)}
                         >
                             {activeStep === steps.length - 1 ? 'ביצוע הזמנה' : 'המשך'}
                         </Button>
