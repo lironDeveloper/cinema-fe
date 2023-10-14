@@ -34,19 +34,13 @@ const img: CSSProperties = {
     boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.2)'
 };
 
-interface FileWithPreview extends File {
-    preview: string;
-}
-
 interface Props {
-    prevImage?: File
+    image: string;
+    onImageUpload: (objectURL: string) => void;
 }
 
 const ThumbnailUploader: FC<Props> = (props) => {
-    const { prevImage } = props;
-    const [image, setImage] = useState<FileWithPreview | null>(prevImage ? Object.assign(prevImage, {
-        preview: URL.createObjectURL(prevImage)
-    }) : null);
+    const { image, onImageUpload } = props;
 
     const { getRootProps, getInputProps } = useDropzone({
         accept: {
@@ -56,9 +50,7 @@ const ThumbnailUploader: FC<Props> = (props) => {
         maxFiles: 1,
         onDrop: (acceptedFiles: File[]) => {
             const imageBlob: File = acceptedFiles[0];
-            setImage(Object.assign(imageBlob, {
-                preview: URL.createObjectURL(imageBlob)
-            }));
+            onImageUpload(URL.createObjectURL(imageBlob));
         },
     });
 
@@ -70,12 +62,10 @@ const ThumbnailUploader: FC<Props> = (props) => {
                 <p style={{ color: '#a6a6a6' }}>גרור ושחרר או לחץ ובחר תמונת נושא עבור הסרט</p>
             </div>
             {image && <aside style={thumbsContainer}>
-                <div style={thumb} key={image.name}>
+                <div style={thumb}>
                     <img
-                        src={image.preview}
+                        src={image}
                         style={img}
-                        // Revoke data uri after image is loaded
-                        onLoad={() => { URL.revokeObjectURL(image.preview) }}
                     />
                 </div>
             </aside>}

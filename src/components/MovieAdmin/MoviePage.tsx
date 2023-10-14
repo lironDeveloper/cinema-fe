@@ -164,6 +164,7 @@ const MoviePage: FC = () => {
                     handleClose={changeModalState}
                     dialogTitle={modalTitle}
                     movie={movies.find((m: Movie) => m.id === selectedMovies[0]) as Movie}
+                    movieThumbnail={movieIdToThumbnail.get(selectedMovies[0])!}
                     onEditMovie={onEditSubmited} />
             default:
                 return <></>
@@ -215,7 +216,7 @@ const MoviePage: FC = () => {
         }
     }
 
-    const onEditSubmited = async (updatedMovie: MovieUpdate) => {
+    const onEditSubmited = async (updatedMovie: MovieUpdate, movieThumbnail: string) => {
         const movieId = selectedMovies[0];
 
         try {
@@ -232,6 +233,27 @@ const MoviePage: FC = () => {
             const data = await response.json();
 
             if (response.ok) {
+                if (movieThumbnail !== movieIdToThumbnail.get(movieId)) {
+                    const formData = new FormData();
+                    const imageFromDataUrl = await fetch(movieThumbnail);
+                    const blobData = await imageFromDataUrl.blob();
+                    if (blobData.type === 'image/png') {
+                        formData.append('file', blobData, 'thumbnail.png');
+                        const responseImageUpload = await fetch(`http://localhost:8080/api/movie/thumbnail/upload/${movieId}`, {
+                            method: 'POST',
+                            headers: {
+                                'Authorization': `Bearer ${token}`
+                            },
+                            body: formData,
+                            credentials: 'include'
+                        });
+                        if (!responseImageUpload.ok) {
+                            throw new Error(data.errors[0]);
+                        }
+                    } else {
+                        throw new Error("ניתן להעלות קבצי PNG בלבד.");
+                    }
+                }
                 setMovies((prevMovies) => {
                     const updatedMovies = [...prevMovies];
                     const movieIndex = updatedMovies.findIndex((movie) => movie.id === movieId);
@@ -249,8 +271,17 @@ const MoviePage: FC = () => {
         }
     }
 
-    const onCreateSubmited = async (movie: MovieCreation) => {
+    const onCreateSubmited = async (movie: MovieCreation, movieThumbnail: string) => {
         try {
+            if (movieThumbnail === '') {
+                throw new Error('יש לבחור תמונת נושא לסרט.')
+            }
+            const formData = new FormData();
+            const imageFromDataUrl = await fetch(movieThumbnail);
+            const blobData = await imageFromDataUrl.blob();
+            if (blobData.type !== 'image/png') {
+                throw new Error("ניתן להעלות קבצי PNG בלבד.");
+            }
             const response = await fetch(`http://localhost:8080/api/movie`, {
                 method: 'POST',
                 headers: {
@@ -264,9 +295,23 @@ const MoviePage: FC = () => {
             const data = await response.json();
 
             if (response.ok) {
+                formData.append('file', blobData, 'thumbnail.png');
+                const responseImageUpload = await fetch(`http://localhost:8080/api/movie/thumbnail/upload/${data.id}`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: formData,
+                    credentials: 'include'
+                });
+                if (!responseImageUpload.ok) {
+                    throw new Error(data.errors[0]);
+                }
+
                 setMovies(movies.concat(data));
                 changeModalState();
-            } else {
+            }
+            else {
                 throw new Error(data.errors[0]);
             }
         } catch (error: any) {

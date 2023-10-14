@@ -15,7 +15,7 @@ import hebrewPattern from '../../Regex/HebewOnly';
 interface Props {
     handleClose: () => void;
     dialogTitle: string;
-    onCreateMovie: (movie: MovieCreation) => void;
+    onCreateMovie: (movie: MovieCreation, movieThumbnail: string) => void;
 }
 
 const CreateMovieDialog: FC<Props> = (props) => {
@@ -29,6 +29,7 @@ const CreateMovieDialog: FC<Props> = (props) => {
     const [director, setDirector] = useState<string>('');
     const [language, setLanguage] = useState<LanguageKeys | undefined>();
     const [minAge, setMinAge] = useState<number>(0);
+    const [thumbnail, setThumbnail] = useState<string>('');
 
     const onSubmit = async () => {
         const movie: MovieCreation = {
@@ -42,7 +43,7 @@ const CreateMovieDialog: FC<Props> = (props) => {
             minAge,
         }
 
-        await onCreateMovie(movie);
+        await onCreateMovie(movie, thumbnail);
     }
 
     const onTitleChanged = (event: ChangeEvent<HTMLInputElement>) => {
@@ -75,6 +76,10 @@ const CreateMovieDialog: FC<Props> = (props) => {
     const onLangugageChanged = (event: SelectChangeEvent) => {
         setLanguage(event.target.value);
     };
+
+    const onImageUpload = (objectURL: string) => {
+        setThumbnail(objectURL);
+    }
 
     return (
         <>
@@ -141,7 +146,7 @@ const CreateMovieDialog: FC<Props> = (props) => {
                         value={language}
                     />
                 </Box>
-                <ThumbnailUploader />
+                <ThumbnailUploader image={thumbnail} onImageUpload={onImageUpload} />
             </DialogContent>
             <DialogActions>
                 <Button onClick={handleClose}>ביטול</Button>

@@ -15,12 +15,13 @@ import MovieUpdate from '../../interfaces/Movie/MovieUpdate';
 interface Props {
     handleClose: () => void;
     dialogTitle: string;
-    onEditMovie: (movie: MovieUpdate) => void;
+    onEditMovie: (movie: MovieUpdate, movieThumbnail: string) => void;
     movie: Movie;
+    movieThumbnail: string;
 }
 
 const EditMovieDialog: FC<Props> = (props) => {
-    const { handleClose, dialogTitle, onEditMovie, movie } = props;
+    const { handleClose, dialogTitle, onEditMovie, movie, movieThumbnail } = props;
 
     const [title, setTitle] = useState<string>(movie.title);
     const [description, setDescription] = useState<string>(movie.description);
@@ -30,6 +31,7 @@ const EditMovieDialog: FC<Props> = (props) => {
     const [director, setDirector] = useState<string>(movie.director);
     const [language, setLanguage] = useState<LanguageKeys | undefined>(languageMap.get(movie.language));
     const [minAge, setMinAge] = useState<number>(movie.minAge);
+    const [thumbnail, setThumbnail] = useState<string>(movieThumbnail);
 
     const onSubmit = async () => {
         const updatedMovie: MovieUpdate = {
@@ -43,7 +45,7 @@ const EditMovieDialog: FC<Props> = (props) => {
             minAge,
         }
 
-        await onEditMovie(updatedMovie);
+        await onEditMovie(updatedMovie, thumbnail);
     }
 
     const onTitleChanged = (event: ChangeEvent<HTMLInputElement>) => {
@@ -75,6 +77,10 @@ const EditMovieDialog: FC<Props> = (props) => {
     const onLangugageChanged = (event: SelectChangeEvent) => {
         setLanguage(event.target.value);
     };
+
+    const onImageUpload = (objectURL: string) => {
+        setThumbnail(objectURL);
+    }
 
     return (
         <>
@@ -141,7 +147,7 @@ const EditMovieDialog: FC<Props> = (props) => {
                         value={language}
                     />
                 </Box>
-                <ThumbnailUploader />
+                <ThumbnailUploader image={thumbnail} onImageUpload={onImageUpload} />
             </DialogContent>
             <DialogActions>
                 <Button onClick={handleClose}>ביטול</Button>
