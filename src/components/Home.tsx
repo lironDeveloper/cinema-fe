@@ -56,7 +56,7 @@ const Home: React.FC = () => {
                             <Typography variant='h6' fontWeight={'bold'}>{genresMap.get(genre)}</Typography >
                             <Box sx={{ display: 'flex', gap: '3vw', flexWrap: 'wrap' }}>
                                 {movies.map((movie: Movie) => (
-                                    <MovieCard movie={movie} />
+                                    <MovieCard movie={movie} clickable={true} />
                                 ))}
                             </Box>
                         </Box>

@@ -4,16 +4,21 @@ import { FC, useEffect, useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import notify from '../utils/ErrorToast';
 import Movie from '../interfaces/Movie/Movie';
+import { useNavigate } from 'react-router-dom';
 
 type MovieCardProps = {
     movie: Movie
     width?: number;
+    clickable?: boolean;
 }
+
+const goldenRatio = 889 / 600;
+const defaultWidth = 180;
 
 const MovieCard: FC<MovieCardProps> = (props) => {
     const { movie } = props;
     const [imageUrl, setImageUrl] = useState<string>('');
-
+    const navigate = useNavigate();
     const { token } = useAuth();
 
     useEffect(() => {
@@ -44,19 +49,25 @@ const MovieCard: FC<MovieCardProps> = (props) => {
         }
     };
 
-    return (
-        <Card sx={{ maxWidth: props.width ? props.width : 180 }} >
+    const widthCalc = () => {
+        return props.width ? props.width : defaultWidth;
+    }
 
+    const heightCalc = () => {
+        return props.width ? props.width * goldenRatio : defaultWidth * goldenRatio;
+    }
+
+    return (
+        <Card sx={{ maxWidth: widthCalc(), maxHeight: heightCalc(), "&:hover": { cursor: 'pointer', opacity: 0.85 } }} onClick={() => {
+            if (props.clickable) {
+                navigate(`/movie/${movie.id}`);
+            }
+        }}>
             <CardMedia
                 component="img"
-                sx={{ height: props.width ? props.width : 180 * 889 / 600 }}
+                sx={{ height: heightCalc() }}
                 image={imageUrl}
             />
-            {/* <CardContent sx={{ padding: '5px 8px 5px 8px !important' }}>
-                <Typography variant="body2" color="text.secondary" sx={{ overflow: 'hidden', display: '-webkit-box', '-webkit-line-clamp': '1', '-webkit-box-orient': 'vertical', textOverflow: 'ellipsis', }}>
-                    {movie.title}
-                </Typography>
-            </CardContent> */}
         </Card>
     );
 }

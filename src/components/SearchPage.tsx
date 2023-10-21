@@ -42,7 +42,7 @@ const SearchPage: React.FC = () => {
             <Toolbar />
             <Box sx={{ display: 'flex', gap: '3vw', flexWrap: 'wrap' }}>
                 {results.map((movie: Movie) => (
-                    <MovieCard movie={movie} />
+                    <MovieCard movie={movie} clickable={true} />
                 ))}
             </Box>
         </Box>

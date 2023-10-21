@@ -1,6 +1,5 @@
 export default interface ReviewCreation {
-    id: number;
-    movieId: number;
+    movieId: string;
     rating: number;
     comment: string;
 }

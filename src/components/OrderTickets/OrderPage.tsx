@@ -20,10 +20,10 @@ const QontoStepIconRoot = styled('div')<{ ownerState: { active?: boolean } }>(
         height: 22,
         alignItems: 'center',
         ...(ownerState.active && {
-            color: '#ee6c4d',
+            color: theme.palette.secondary.main,
         }),
         '& .QontoStepIcon-completedIcon': {
-            color: '#ee6c4d',
+            color: theme.palette.secondary.main,
             zIndex: 1,
             fontSize: 36,
         },

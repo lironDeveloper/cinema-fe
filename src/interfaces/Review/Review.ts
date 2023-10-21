@@ -7,4 +7,5 @@ export default interface Review {
     movie: Movie;
     rating: number;
     comment: string;
+    createdOn: Date;
 }
