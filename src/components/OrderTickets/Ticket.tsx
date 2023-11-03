@@ -3,6 +3,7 @@ import { Paper, Typography } from '@mui/material';
 import Showtime from '../../interfaces/Showtime/Showtime';
 import Point from '../../interfaces/Point';
 import dayjs from 'dayjs';
+import Seat from '../../interfaces/Seat/Seat';
 
 
 type Props = {
@@ -13,9 +14,11 @@ type Props = {
 const Ticket: FC<Props> = (props) => {
     const { seat, showtime } = props;
 
+    const bgColor = new Date().getTime() < new Date(showtime.startTime).getTime() ? "#D4A35E" : "#A9A9A9"
+
     return (
         <>
-            <Paper elevation={20} style={{ padding: '16px', backgroundColor: '#D4A35E', width: '45%', color: '#ffffff' }}>
+            <Paper elevation={20} style={{ padding: '16px', backgroundColor: bgColor, width: '40%', color: '#ffffff' }}>
                 <Typography variant="h5" fontWeight={'bold'}>{showtime.movie.title}</Typography>
                 <Typography variant="body1">{dayjs(showtime.startTime).format('DD/MM/YYYY בשעה HH:mm')}</Typography>
                 <Typography variant="body2">{`שורה ${seat.seatRowNum} כסא ${seat.seatColNum}`}</Typography>

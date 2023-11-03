@@ -89,7 +89,6 @@ const SignUp: FC = () => {
                     <Grid container spacing={2}>
                         <Grid item xs={12} sm={6}>
                             <TextField
-                                autoComplete="given-name"
                                 name="firstName"
                                 required
                                 fullWidth
@@ -107,7 +106,6 @@ const SignUp: FC = () => {
                                 id="lastName"
                                 label="שם משפחה"
                                 name="lastName"
-                                autoComplete="family-name"
                                 value={lastName}
                                 onChange={onLastNameChanged}
                             />
@@ -119,7 +117,6 @@ const SignUp: FC = () => {
                                 id="email"
                                 label="כתובת אימייל"
                                 name="email"
-                                autoComplete="email"
                                 value={email}
                                 onChange={onEmailChanged}
                             />
@@ -132,7 +129,6 @@ const SignUp: FC = () => {
                                 label="סיסמא"
                                 type="password"
                                 id="password"
-                                autoComplete="new-password"
                                 value={password}
                                 onChange={onPasswordChanged}
                             />

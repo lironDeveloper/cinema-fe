@@ -91,7 +91,6 @@ const SignIn: FC = () => {
                         id="email"
                         label="כתובת אימייל"
                         name="email"
-                        autoComplete="email"
                         autoFocus
                         value={email}
                         onChange={onEmailChanged}
@@ -104,7 +103,6 @@ const SignIn: FC = () => {
                         label="סיסמא"
                         type="password"
                         id="password"
-                        autoComplete="current-password"
                         value={password}
                         onChange={onPasswordChanged}
                     />

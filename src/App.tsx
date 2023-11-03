@@ -18,6 +18,7 @@ import ManageUsersPage from './components/ManageUsersPage/ManageUsersPage';
 import { styled } from '@mui/material';
 import SearchPage from './components/SearchPage';
 import OrderPage from './components/OrderTickets/OrderPage';
+import ProfilePage from './components/UserInfo/ProfilePage';
 
 const SideBarController = styled('div')(({ theme }) => ({
 
@@ -104,7 +105,7 @@ function App() {
               path="/user"
               element={
                 <ProtectedRoute>
-                  <div>user</div>
+                  <ProfilePage />
                 </ProtectedRoute>
               }
             />

@@ -14,7 +14,7 @@ const ChooseSeats: FC<Props> = (props) => {
     const { showtime, selectedSeats } = props;
 
     return (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 30, marginTop: 30, flexWrap: 'wrap' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 30, marginTop: 30 }}>
             <MovieInfoCompact showtime={showtime!} size={150} />
             <Divider />
             <Typography variant="h4" fontWeight={'bold'}>כרטיסים</Typography>
