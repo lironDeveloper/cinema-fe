@@ -8,6 +8,7 @@ import Summary from './Summary';
 import Showtime from '../../interfaces/Showtime/Showtime';
 import { useAuth } from '../../context/AuthContext';
 import notify from '../../utils/ErrorToast';
+import { useNavigate } from 'react-router-dom';
 
 const steps: string[] = ['בחירת הקרנה', 'בחירת מושבים', 'סיכום הזמנה'];
 
@@ -70,6 +71,7 @@ const OrderPage: FC = () => {
     const [selectedSeats, setSelectedSeats] = useState<Point[]>([]);
 
     const { token } = useAuth();
+    const navigate = useNavigate();
 
     useEffect(() => {
 
@@ -98,7 +100,7 @@ const OrderPage: FC = () => {
                 const data = await response.json();
 
                 if (response.ok) {
-                    console.log(data)
+                    navigate(`/user`);
                 } else {
                     throw new Error(data.errors[0])
                 }
@@ -127,9 +129,7 @@ const OrderPage: FC = () => {
             case 1:
                 return <ChooseSeats showtime={selectedShowtime} handleSeatSelection={handleSeatSelection} selectedSeats={selectedSeats} />;
             case 2:
-                return <Summary />;
-            case 3:
-                return <Summary />;
+                return <Summary showtime={selectedShowtime} selectedSeats={selectedSeats} />;
             default:
                 return <div>Not Found</div>;
         }
