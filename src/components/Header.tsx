@@ -15,7 +15,6 @@ import InputBase from '@mui/material/InputBase';
 import SearchIcon from '@mui/icons-material/Search';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import { Logout } from '@mui/icons-material';
-import MovieIcon from '@mui/icons-material/Movie';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 
 const Search = styled('div')(({ theme }) => ({
@@ -119,7 +118,6 @@ const Header: FC = () => {
         <AppBar position="fixed" sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}>
             <Toolbar >
                 <LogoWrapper>
-                    <MovieIcon sx={{ mr: 1 }} />
                     <Typography
                         variant="h4"
                         noWrap
@@ -133,7 +131,7 @@ const Header: FC = () => {
                             textDecoration: 'none',
                         }}
                     >
-                        סינמה
+                        סינמה גלקסי
                     </Typography>
                 </LogoWrapper>
                 <div style={{ display: 'flex', alignItems: 'center', flex: 1, justifyContent: 'center' }}>

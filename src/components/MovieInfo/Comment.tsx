@@ -1,4 +1,4 @@
-import { FC, useEffect, useState } from 'react';
+import { FC } from 'react';
 import Review from '../../interfaces/Review/Review';
 import { Avatar, Box, Paper, Rating, Typography } from '@mui/material';
 import dayjs from 'dayjs';

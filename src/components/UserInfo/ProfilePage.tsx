@@ -3,14 +3,8 @@ import { FC, useEffect, useState } from 'react';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
 
-import Table from '../GenericComponents/Table';
-import HeadCell from '../../interfaces/HeadCell';
 import notify from '../../utils/ErrorToast';
-import TableRowDisplay from '../../interfaces/TableRowDisplay';
-import User from '../../interfaces/User/User';
-import UserRow from '../../interfaces/User/UserRow';
-import { Divider, FormControlLabel, FormGroup, Grid, Switch, TextField, Typography } from '@mui/material';
-import { Role } from '../../interfaces/Role';
+import { Divider, Grid, TextField, Typography } from '@mui/material';
 import { Ticket as TicketInterface } from '../../interfaces/Ticket/Ticket';
 import Ticket from '../OrderTickets/Ticket';
 

@@ -1,4 +1,4 @@
-import React, { CSSProperties, FC, useState } from 'react';
+import { CSSProperties, FC } from 'react';
 import { useDropzone } from 'react-dropzone';
 
 
