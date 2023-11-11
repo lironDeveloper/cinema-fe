@@ -30,22 +30,22 @@ const CreateBranchDialog: FC<Props> = (props) => {
     }
 
     const onNameChanged = (event: ChangeEvent<HTMLInputElement>) => {
-        if (hebrewPattern.test(event.target.value))
+        if (hebrewPattern.test(event.target.value) || event.target.value === '')
             setName(event.target.value);
     };
 
     const onCityChanged = (event: ChangeEvent<HTMLInputElement>) => {
-        if (hebrewPattern.test(event.target.value))
+        if (hebrewPattern.test(event.target.value) || event.target.value === '')
             setCity(event.target.value);
     };
 
     const onContactInfoChanged = (event: ChangeEvent<HTMLInputElement>) => {
-        if (hebrewPattern.test(event.target.value))
+        if (hebrewPattern.test(event.target.value) || event.target.value === '')
             setContactInfo(event.target.value);
     };
 
     const onAddressChanged = (event: ChangeEvent<HTMLInputElement>) => {
-        if (hebrewNumbersPattern.test(event.target.value))
+        if (hebrewNumbersPattern.test(event.target.value) || event.target.value === '')
             setAddress(event.target.value);
     };
 

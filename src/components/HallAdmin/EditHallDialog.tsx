@@ -30,7 +30,7 @@ const EditHallDialog: FC<Props> = (props) => {
     }
 
     const onNameChanged = (event: ChangeEvent<HTMLInputElement>) => {
-        if (hebrewPattern.test(event.target.value))
+        if (hebrewPattern.test(event.target.value) || event.target.value === '')
             setName(event.target.value);
     };
 

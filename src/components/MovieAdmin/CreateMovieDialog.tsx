@@ -69,7 +69,7 @@ const CreateMovieDialog: FC<Props> = (props) => {
     };
 
     const onDirectorChanged = (event: ChangeEvent<HTMLInputElement>) => {
-        if (hebrewPattern.test(event.target.value))
+        if (hebrewPattern.test(event.target.value) || event.target.value === '')
             setDirector(event.target.value);
     };
 
